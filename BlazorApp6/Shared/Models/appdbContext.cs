@@ -201,6 +201,6 @@ namespace BlazorApp6.Shared.Models
             OnModelCreatingPartial(modelBuilder);
         }
 
-        private partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
