@@ -1,4 +1,4 @@
-using BlazorApp6.Shared.Models;
+global using BlazorApp6.Shared.Models;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using System;
