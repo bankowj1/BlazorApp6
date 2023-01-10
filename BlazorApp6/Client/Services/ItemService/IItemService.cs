@@ -7,8 +7,6 @@
         List<MaterialsItem> materialItems { get; set; }
 
         Task<Item> GetItemAsync(int id);
-        Task GetItemsGroupsAsync();
         Task GetItemsAsync();
-        Task GetMaterilItemsAsync();
     }
 }

@@ -1,0 +1,88 @@
+﻿@page "/itemMod"
+@page "/itemMod/{id:int}"
+@inject IItemService ItemService
+
+@if(Id == null)
+{
+    <h1>Add Item</h1>
+}
+else
+{
+    <h1>Modify Item</h1>
+
+}
+<EditForm Model="item" OnSubmit="ItemSubmit">
+    <div>
+        <label for="Name"> Name </label>
+        <InputText id="name" @bind-Value="item.Name" class="gtr-150"></InputText>
+    </div>
+    <div>
+        <label for="Descriptions"> Description </label>
+        <InputText id="descriptions" @bind-Value="item.Descriptions" class="gtr-512" />
+    </div>
+    <div>
+        <label for="WeightIt"> Weight </label>
+        <InputNumber id="weightIt" @bind-Value="item.WeightIt" step="0.01" min="0" class="gtr-150" />
+    </div>
+    <div>
+        <label for="HeightIt"> Height </label>
+        <InputNumber id="heightIt" @bind-Value="item.HeightIt" step="0.01" min="0" class="gtr-150" />
+    </div>
+    <div>
+        <label for="WidthIt"> Width </label>
+        <InputNumber id="widthIt" @bind-Value="item.WidthIt" step="0.01" min="0" class="gtr-150" />
+    </div>
+    <div>
+        <label for="LengthIt"> Length </label>
+        <InputNumber id="lengthIt" @bind-Value="item.LengthIt" step="0.01" min="0" class="gtr-150" />
+    </div>
+    <div>
+        <label for="DateOfPurchase"> Date of Purchase </label>
+        <InputDate id="dateOfPurchase" @bind-Value="item.DateOfPurchase" />
+    </div>
+    <div>
+        <label for="NrOfWashes"> Number of Washes </label>
+        <InputNumber id="nrOfWashes" @bind-Value="item.NrOfWashes" min="0" class="gtr-150" />
+    </div>
+    <div>
+        <label for="LastWash"> Last Wash </label>
+        <InputDate id="lastWash" @bind-Value="item.LastWash" />
+    </div>
+    <div>
+        <label for="DangerousColor"> Dangerous Color </label>
+        <InputCheckbox id="dangerousColor" @bind-Value="item.DangerousColor" />
+    </div>
+    <br />
+    <button type="submit" class="button"> @btnText </button>
+</EditForm>
+    
+    <h5> add list of materials and group </h5>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    Item item = new Item { ItemsGroups = null, MaterialsItems = null };
+    private string btnText = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        btnText = Id == null ? "Save New" : "Update";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == null)
+        {
+
+        }
+        else
+        {
+            item = await ItemService.GetItemAsync((int)Id);
+        }
+    }
+    async Task ItemSubmit()
+    {
+
+    }
+}

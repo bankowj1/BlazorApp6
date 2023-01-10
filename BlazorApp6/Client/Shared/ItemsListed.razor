@@ -1,5 +1,6 @@
 ﻿@using BlazorApp6.ViewModels
 @inject IItemService ItemService
+@inject NavigationManager NavMeg
 <div>
     <h1> LIst of Items</h1>
     <table class="table">
@@ -10,6 +11,8 @@
                 <th>NrOfWashes</th>
                 <th>LastWash</th>
                 <th>DangerousColor</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +24,16 @@
                     <td>@item.NrOfWashes</td>
                     <td>@item.LastWash</td>
                     <td>@item.DangerousColor</td>
+                    <td>
+                        <button class="button" @onclick="(() => Modif(item.Iditem))">
+                            <h3>modify</h3>
+                        </button>
+                    </td>
+                    <th>
+                        <button class="button" @onclick="(() => Del(item.Iditem))">
+                            <h3>del</h3>
+                        </button>
+                    </th>
                 </tr>
             }
         </tbody>
@@ -36,5 +49,11 @@
     protected override async Task OnInitializedAsync()
     {
         await ItemService.GetItemsAsync();
+    }
+    void Modif (int Id){
+        NavMeg.NavigateTo($"itemMod/{Id}");
+    }
+    void Del(int ID){
+
     }
 }
