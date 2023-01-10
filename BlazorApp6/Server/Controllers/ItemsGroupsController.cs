@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -25,6 +26,50 @@ namespace BlazorApp6.Server.Controllers
         public async Task<ActionResult<ItemsGroup>> GetItemsGroup(int id)
         {
             var itemsGroup = await _context.ItemsGroups.FindAsync(id);
+
+            if (itemsGroup == null)
+            {
+                return NotFound();
+            }
+
+            return itemsGroup;
+        }
+        // GET: api/ItemsGroups/5
+        [HttpGet("Details/{id}")]
+        public async Task<ActionResult<ItemsGroup>> GetItemsGroupDetails(int id)
+        {
+            var itemsGroup = await _context.ItemsGroups.FindAsync(id);
+
+            if (itemsGroup == null)
+            {
+                return NotFound();
+            }
+            await _context.Entry(itemsGroup)
+                .Reference(itemsGroup => itemsGroup.Group)
+                .LoadAsync();
+            await _context.Entry(itemsGroup)
+                .Reference(itemsGroup => itemsGroup.Item)
+                .LoadAsync();
+
+            return itemsGroup;
+        }
+        [HttpGet("Group/{id}")]
+        public async Task<ActionResult<IEnumerable<ItemsGroup>>> GetItemsGroupOfGroup(int id)
+        {
+            var itemsGroup = await _context.ItemsGroups.Where(ig => ig.GroupId == id).Include(ig => ig.Item).Include(ig => ig.Group).ToListAsync();
+
+            if (itemsGroup == null)
+            {
+                return NotFound();
+            }
+
+            return itemsGroup;
+        }
+
+        [HttpGet("Item/{id}")]
+        public async Task<ActionResult<IEnumerable<ItemsGroup>>> GetItemsGroupOfItem(int id)
+        {
+            var itemsGroup = await _context.ItemsGroups.Where(ig => ig.ItemId == id).Include(ig => ig.Item).Include(ig => ig.Group).ToListAsync();
 
             if (itemsGroup == null)
             {

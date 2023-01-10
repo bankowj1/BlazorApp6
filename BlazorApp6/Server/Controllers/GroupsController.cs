@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlazorApp6.Shared.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -31,6 +32,17 @@ namespace BlazorApp6.Server.Controllers
                 return NotFound();
             }
 
+            return @group;
+        }
+        [HttpGet("User/{id}")]
+        public async Task<ActionResult<IEnumerable<Group>>> GetGroupsUser(int id)
+        {
+            var @group = await _context.Groups.Where(group=> group.UserId==id).ToListAsync();
+
+            if (@group == null)
+            {
+                return NotFound();
+            }
             return @group;
         }
 

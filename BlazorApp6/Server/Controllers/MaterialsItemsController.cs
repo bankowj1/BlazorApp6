@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlazorApp6.Shared.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -25,6 +26,48 @@ namespace BlazorApp6.Server.Controllers
         public async Task<ActionResult<MaterialsItem>> GetMaterialsItem(int id)
         {
             var materialsItem = await _context.MaterialsItems.FindAsync(id);
+
+            if (materialsItem == null)
+            {
+                return NotFound();
+            }
+
+            return materialsItem;
+        }
+        [HttpGet("Details/{id}")]
+        public async Task<ActionResult<MaterialsItem>> GetMaterialsItemDetails(int id)
+        {
+            var materialsItem = await _context.MaterialsItems.FindAsync(id);
+
+            if (materialsItem == null)
+            {
+                return NotFound();
+            }
+            await _context.Entry(materialsItem)
+                .Reference(materialsItem => materialsItem.Mat)
+                .LoadAsync();
+            await _context.Entry(materialsItem)
+                .Reference(materialsItem => materialsItem.Item)
+                .LoadAsync();
+            return materialsItem;
+        }
+        [HttpGet("Item/{id}")]
+        public async Task<ActionResult<IEnumerable<MaterialsItem>>> GetItemsGroupOfItem(int id)
+        {
+            var materialsItem = await _context.MaterialsItems.Where(mi => mi.ItemId == id).Include(ig => ig.Item).Include(ig => ig.Mat).ToListAsync();
+
+            if (materialsItem == null)
+            {
+                return NotFound();
+            }
+
+            return materialsItem;
+        }
+
+        [HttpGet("Mat/{id}")]
+        public async Task<ActionResult<IEnumerable<MaterialsItem>>> GetItemsGroupOfMat(int id)
+        {
+            var materialsItem = await _context.MaterialsItems.Where(mi => mi.MatId == id).Include(ig => ig.Item).Include(ig => ig.Mat).ToListAsync();
 
             if (materialsItem == null)
             {
