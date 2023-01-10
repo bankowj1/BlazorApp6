@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Text.Json.Serialization;
 
 namespace BlazorApp6.Shared.Models
 {
@@ -15,6 +14,8 @@ namespace BlazorApp6.Shared.Models
         public string Name { get; set; } = null!;
 
         public virtual User? User { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<ItemsGroup> ItemsGroups { get; set; }
     }
 }
