@@ -1,0 +1,78 @@
+﻿@using BlazorApp6.ViewModels
+<div>
+    <h1> LIst of Items</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Descriptions</th>
+                <th>NrOfWashes</th>
+                <th>LastWash</th>
+                <th>DangerousColor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (items.Any())
+            {
+                @foreach (var item in items)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Descriptions</td>
+                        <td>@item.NrOfWashes</td>
+                        <td>@item.LastWash</td>
+                        <td>@item.DangerousColor</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+
+    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+    private ItemViewModel _itemViewModel = new ItemViewModel();
+    List<Item> items = new List<Item> { 
+        new Item
+        {
+            Iditem = 1,
+            Name = "Test Item",
+            Descriptions = "This is a test item.",
+            WeightIt = 10.5f,
+            HeightIt = 20.0f,
+            WidthIt = 15.0f,
+            LengthIt = 25.0f,
+            DateOfPurchase = DateTime.Now,
+            NrOfWashes = 3,
+            LastWash = DateTime.Now.AddDays(-10),
+            DangerousColor = false
+        },
+        new Item
+        {
+            Iditem = 2,
+            Name = "Test Item 2",
+            Descriptions = "This is a test item.",
+            WeightIt = 10.5f,
+            HeightIt = 20.0f,
+            WidthIt = 15.0f,
+            LengthIt = 25.0f,
+            DateOfPurchase = DateTime.Now,
+            NrOfWashes = 3,
+            LastWash = DateTime.Now.AddDays(-10),
+            DangerousColor = false
+        }
+    };
+
+    private void SanitizeInput()
+    {
+        foreach (var item in items)
+        {
+            item.Name = _sanitizer.Sanitize(item.Name);
+            item.Descriptions = _sanitizer.Sanitize(item.Descriptions);
+        }
+    }
+    
+}

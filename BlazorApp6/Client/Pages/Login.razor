@@ -1,0 +1,43 @@
+﻿@page "/Login"
+@using BlazorApp6.ViewModels
+@using BlazorApp6.Shared.Models
+@inject HttpClient HttpClient
+
+<div class="col-12">
+    <input type="text" @bind-value="_loginViewModel.Userlogin" class="centered" placeholder="Login">
+    <br />
+    <input type="text" @bind-value="_loginViewModel.Username" class="centered" placeholder="Username">
+    <br />
+    <input type="text" @bind-value="_loginViewModel.Email" class="centered" placeholder="Email">
+    <br />
+    <input type="text" @bind-value="_loginViewModel.Password" class="centered" placeholder="Password">
+    <br />
+    <button class="btn btn-primary" @onclick="UpdateProfile">Update Profile</button>
+    <button class="btn btn-primary" @onclick="GetProfile">Get Profile</button>
+</div>
+
+@code {
+
+    private UserViewModel _loginViewModel = new UserViewModel();
+    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+
+    private async Task UpdateProfile()
+    {
+        SanitizeInput();
+        User user = _loginViewModel;
+        await HttpClient.PutAsJsonAsync("api/Users/1", user);
+    }
+
+    private async Task GetProfile()
+    {
+        User user = await HttpClient.GetFromJsonAsync<User>("api/Users/1");
+        _loginViewModel = user;
+    }
+    private void SanitizeInput()
+    {  
+        _loginViewModel.Userlogin = _sanitizer.Sanitize(_loginViewModel.Userlogin);
+        _loginViewModel.Username = _sanitizer.Sanitize(_loginViewModel.Username);
+        _loginViewModel.Email = _sanitizer.Sanitize(_loginViewModel.Email);
+        _loginViewModel.Password = _sanitizer.Sanitize(_loginViewModel.Password);
+    }
+}
