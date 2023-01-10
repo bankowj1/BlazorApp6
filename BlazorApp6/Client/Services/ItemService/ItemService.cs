@@ -14,7 +14,7 @@ namespace BlazorApp6.Client.Services.ItemService
         public List<Item> items { get; set; } = new List<Item>();
         public List<ItemsGroup> itemsGroups { get; set; } = new List<ItemsGroup>();
         public List<MaterialsItem> materialItems { get; set; } = new List<MaterialsItem>();
-        
+
         public async Task<Item> GetItemAsync(int id)
         {
             var res = await _httpClient.GetFromJsonAsync<Item>($"api/Items/{id}");
@@ -28,11 +28,11 @@ namespace BlazorApp6.Client.Services.ItemService
         public async Task GetItemsAsync()
         {
             var res = await _httpClient.GetFromJsonAsync<List<Item>>("api/Items");
-            if(res == null)
+            if (res == null)
             {
                 return;
             }
-            items = res ;
+            items = res;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using BlazorApp6.Shared.Models;
-
-namespace BlazorApp6.ViewModels
+﻿namespace BlazorApp6.ViewModels
 {
     public class UserViewModel
     {
@@ -8,7 +6,7 @@ namespace BlazorApp6.ViewModels
         public string Userlogin { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-        
+
         public static implicit operator UserViewModel(User user)
         {
             return new UserViewModel
@@ -17,8 +15,9 @@ namespace BlazorApp6.ViewModels
                 Userlogin = System.Text.Encoding.UTF8.GetString(user.Userlogin),
                 Email = System.Text.Encoding.UTF8.GetString(user.Email),
                 Password = System.Text.Encoding.UTF8.GetString(user.Pass)
-            };            
+            };
         }
+
         public static implicit operator User(UserViewModel user)
         {
             return new User

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -14,6 +13,7 @@ namespace BlazorApp6.Server.Controllers
         {
             return Ok(Users);
         }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<List<User>>> GetUser(int id)
         {

@@ -12,10 +12,13 @@ namespace BlazorApp6.Shared.Models
         }
 
         public int Iditem { get; set; }
+
         [StringLength(128, ErrorMessage = "The name must be at most 128 characters long.")]
         public string Name { get; set; } = null!;
+
         [StringLength(512, ErrorMessage = "The description must be at most 512 characters long.")]
         public string? Descriptions { get; set; }
+
         [Range(0.0, float.MaxValue, ErrorMessage = "The weight must be a positive float.")]
         public float? WeightIt { get; set; }
 
@@ -27,10 +30,12 @@ namespace BlazorApp6.Shared.Models
 
         [Range(0.0, float.MaxValue, ErrorMessage = "The length must be a positive float.")]
         public float? LengthIt { get; set; }
+
         public DateTime? DateOfPurchase { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Number of washes must be a positive float.")]
         public int? NrOfWashes { get; set; }
+
         public DateTime? LastWash { get; set; }
         public bool DangerousColor { get; set; }
 
