@@ -84,6 +84,7 @@ else
     async Task ItemSubmit()
     {
         item.Name = _sanitizer.Sanitize(item.Name);
+        if(item.Descriptions != null)
         item.Descriptions = _sanitizer.Sanitize(item.Descriptions);
         if (Id == null)
         {

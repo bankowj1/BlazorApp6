@@ -1,28 +1,23 @@
 ﻿@page "/Login"
+@using BlazorApp6.Client.Services.AuthService
 @using BlazorApp6.ViewModels
 @using BlazorApp6.Shared.Models
-@inject HttpClient HttpClient
+@inject IAuthService AuthService
+@inject ISessionStorageService SesStorage
 
 <div class="col-12">
     <EditForm Model="_loginViewModel" OnSubmit="ItemSubmit">
         <div>
-            <label for="Login"> Name </label>
+            <label for="Login"> Login </label>
             <InputText id="name" @bind-Value="_loginViewModel.Userlogin" class="gtr-150"></InputText>
+            <ValidationMessage For="@(() => _loginViewModel.Userlogin)" />
         </div>
         <div>
-            <label for="Password"> Name </label>
+            <label for="Password"> Password </label>
             <InputText id="Password" @bind-Value="_loginViewModel.Password" class="gtr-150"></InputText>
+            <ValidationMessage For="@(() => _loginViewModel.Password)" />
         </div>
-        <div>
-            <label for="Email"> Name </label>
-            <InputText id="Email" @bind-Value="_loginViewModel.Email" class="gtr-150"></InputText>
-        </div>
-        <div>
-            <label for="Username"> Name </label>
-            <InputText id="Username" @bind-Value="_loginViewModel.Username" class="gtr-150"></InputText>
-        </div>
-        <button class="btn btn-primary" @onclick="UpdateProfile">Update Profile</button>
-        <button class="btn btn-primary" @onclick="GetProfile">Get Profile</button>
+        <button type="submit" class="button"> Login </button>
     </EditForm>
 </div>
 
@@ -31,35 +26,16 @@
     private UserViewModel _loginViewModel = new UserViewModel();
     private HtmlSanitizer _sanitizer = new HtmlSanitizer();
 
-    private async Task UpdateProfile()
-    {
-        SanitizeInput();
-        User user = _loginViewModel;
-        await HttpClient.PutAsJsonAsync("api/Users/1", user);
-    }
-
-    private async Task GetProfile()
-    {
-        User user = await HttpClient.GetFromJsonAsync<User>("api/Users/1");
-        _loginViewModel = user;
-    }
     private void SanitizeInput()
     {  
         _loginViewModel.Userlogin = _sanitizer.Sanitize(_loginViewModel.Userlogin);
-        _loginViewModel.Username = _sanitizer.Sanitize(_loginViewModel.Username);
-        _loginViewModel.Email = _sanitizer.Sanitize(_loginViewModel.Email);
         _loginViewModel.Password = _sanitizer.Sanitize(_loginViewModel.Password);
     }
     async Task ItemSubmit()
     {
         SanitizeInput();
-        /*if (Id == null)
-        {
-            //await useSer.CreateItemAsync(_loginViewModel);
-        }
-        else
-        {
-            //await useSer.UpdateItemAsync(_loginViewModel);
-        }*/
+        LogUserDTO user = _loginViewModel;
+        var token = await AuthService.LoginAsync(user);
+        await SesStorage.SetItemAsStringAsync("token", token);
     }
 }

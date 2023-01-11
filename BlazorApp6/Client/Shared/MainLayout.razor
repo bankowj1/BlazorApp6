@@ -11,13 +11,17 @@
                     <ul>
                         <li> <a href="">Home</a></li>
                         <li> <a href="" @onclick="FullScreen">Fullscreen</a></li>
+                    </ul>
+                </div>
+                <div class="aln-right">
+                    <ul>
                         <AuthorizeView>
                             <Authorized>
                                 <li> <a href="" @onclick="(()=>Logout())">Logout</a></li>
                             </Authorized>
                             <NotAuthorized>
-                                <li> <a href="login" >Login</a></li>
-                                <li> <a href="register">Register</a></li>
+                        <li> <a href="Login">Login</a></li>
+                        <li> <a href="Register">Register</a></li>
                             </NotAuthorized>
                         </AuthorizeView>
                         <li>
@@ -32,15 +36,14 @@
                         </li>
                     </ul>
                 </div>
-                <div class="aln-right">
-                </div>
             </div>
         <AuthorizeView>
             <Authorized>
                 <div id="header" @onclick="ToggleNavMenu">
                     <NavMenu />
                 </div>
-
+            </Authorized>
+        </AuthorizeView>
                 <div id="main">
                     <h1>
                         sth
@@ -55,8 +58,7 @@
                         <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
                     </div>
                 </div>
-            </Authorized>
-        </AuthorizeView>
+           
     </body>
 
 

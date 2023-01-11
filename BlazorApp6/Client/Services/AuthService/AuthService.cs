@@ -21,7 +21,7 @@ namespace BlazorApp6.Client.Services.AuthService
 
         public async Task<string> LoginAsync(LogUserDTO lg)
         {
-            var res = await _httpClient.PostAsJsonAsync("Login", lg);
+            var res = await _httpClient.PostAsJsonAsync("api/Auth/Login", lg);
             if (res == null)
                 throw new Exception("not loged");
             return await res.Content.ReadAsStringAsync(); 
@@ -30,10 +30,11 @@ namespace BlazorApp6.Client.Services.AuthService
 
         public async Task<bool> RegisterAsync(RegUserDTO rg)
         {
-            var res = await _httpClient.PostAsJsonAsync("Register", rg);
+            var res = await _httpClient.PostAsJsonAsync("api/Auth/Register", rg);
             if (res == null)
                 throw new Exception("not registered");
             return res.IsSuccessStatusCode;
+
         }
     }
 }

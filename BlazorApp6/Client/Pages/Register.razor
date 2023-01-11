@@ -1,65 +1,69 @@
 ﻿@page "/Register"
+@using BlazorApp6.Client.Services.AuthService
 @using BlazorApp6.ViewModels
 @using BlazorApp6.Shared.Models
-@inject HttpClient HttpClient
+@inject IAuthService AuthService
+@inject ISessionStorageService SesStorage
+@inject NavigationManager NavMeg
 
+<h3>@mess</h3>
 <div class="col-12">
     <EditForm Model="_loginViewModel" OnSubmit="ItemSubmit">
+        <ValidationSummary />
         <div>
-            <label for="Login"> Name </label>
-            <InputText id="name" @bind-Value="_loginViewModel.Userlogin" class="gtr-150"></InputText>
-        </div>
-        <div>
-            <label for="Password"> Name </label>
-            <InputText id="Password" @bind-Value="_loginViewModel.Password" class="gtr-150"></InputText>
-        </div>
-        <div>
-            <label for="Email"> Name </label>
-            <InputText id="Email" @bind-Value="_loginViewModel.Email" class="gtr-150"></InputText>
-        </div>
-        <div>
-            <label for="Username"> Name </label>
+            <label for="Username"> Username </label>
             <InputText id="Username" @bind-Value="_loginViewModel.Username" class="gtr-150"></InputText>
+            <ValidationMessage For="@(() => _loginViewModel.Username)" />
         </div>
-        <button class="btn btn-primary" @onclick="UpdateProfile">Update Profile</button>
-        <button class="btn btn-primary" @onclick="GetProfile">Get Profile</button>
+        <div>
+            <label for="Login"> Login </label>
+            <InputText id="name" @bind-Value="_loginViewModel.Userlogin" class="gtr-150"></InputText>
+            <ValidationMessage For="@(() => _loginViewModel.Userlogin)" />
+        </div>
+        <div>
+            <label for="Email"> Email </label>
+            <InputText id="Email" @bind-Value="_loginViewModel.Email" class="gtr-150"></InputText>
+            <ValidationMessage For="@(() => _loginViewModel.Email)" />
+        </div>
+        <div>
+            <label for="Password"> Password </label>
+            <InputText id="Password" @bind-Value="_loginViewModel.Password" class="gtr-150"></InputText>
+            <ValidationMessage For="@(() => _loginViewModel.Password)" />
+        </div>
+        
+        <button type="submit" class="button"> Login </button>
+
     </EditForm>
+ 
 </div>
 
 @code {
-
+    
     private UserViewModel _loginViewModel = new UserViewModel();
     private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+    private string mess="Please Register Yourself";
 
-    private async Task UpdateProfile()
-    {
-        SanitizeInput();
-        User user = _loginViewModel;
-        await HttpClient.PutAsJsonAsync("api/Users/1", user);
-    }
-
-    private async Task GetProfile()
-    {
-        User user = await HttpClient.GetFromJsonAsync<User>("api/Users/1");
-        _loginViewModel = user;
-    }
     private void SanitizeInput()
-    {  
-        _loginViewModel.Userlogin = _sanitizer.Sanitize(_loginViewModel.Userlogin);
+    {
         _loginViewModel.Username = _sanitizer.Sanitize(_loginViewModel.Username);
+        _loginViewModel.Userlogin = _sanitizer.Sanitize(_loginViewModel.Userlogin);
         _loginViewModel.Email = _sanitizer.Sanitize(_loginViewModel.Email);
         _loginViewModel.Password = _sanitizer.Sanitize(_loginViewModel.Password);
     }
     async Task ItemSubmit()
     {
+
         SanitizeInput();
-        /*if (Id == null)
+        RegUserDTO user = _loginViewModel;
+        var token = await AuthService.RegisterAsync(user);
+        if(token)
         {
-            //await useSer.CreateItemAsync(_loginViewModel);
+            NavMeg.NavigateTo("/Login");
         }
         else
         {
-            //await useSer.UpdateItemAsync(_loginViewModel);
-        }*/
+            mess = "Sth went wrong try again";
+        }
+        
     }
 }
