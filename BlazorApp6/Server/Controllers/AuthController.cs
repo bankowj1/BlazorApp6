@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -86,10 +87,15 @@ namespace BlazorApp6.Server.Controllers
         }
         private string CreateToken(User user)
         {
+            string role = "user";
+            if (user.Iduser > 5 && user.Iduser < 10)
+            {
+                role = "admin";
+            }
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,user.Username),
-                //new Claim(ClaimTypes.Role,'user' )
+                new Claim(ClaimTypes.Role, role )
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_appIdentitySettings.Jwtoken.Token));
             var cred = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace BlazorApp6.Server.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly appdbContext _context;
