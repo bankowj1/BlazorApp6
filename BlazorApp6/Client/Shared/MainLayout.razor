@@ -1,22 +1,23 @@
 ﻿@inherits LayoutComponentBase
+@using BlazorApp6.Client.Services
+@using BlazorApp6.Client.Pages
 @inject IJSRuntime JS
-
+@inject AuthenticationStateProvider AuthStateProv
     <body class="@NavMenuCssClass">
-        <AuthorizeView>
-            <NotAuthorized>
+        
+            
             <div id="topping">
                 <div class="left">
                     <ul>
                         <li> <a href="">Home</a></li>
                         <li> <a href="" @onclick="FullScreen">Fullscreen</a></li>
-                        <li> <a href="login">Login</a></li>
-                        <!--<AuthorizeView>
+                        <AuthorizeView>
                             <Authorized>
                                 <li> <a href="" @onclick="(()=>Logout())">Logout</a></li>
                             </Authorized>
                             <NotAuthorized>
                                 <li> <a href="login" >Login</a></li>
-                                <li> <a href="register" >Register</a></li>
+                                <li> <a href="register">Register</a></li>
                             </NotAuthorized>
                         </AuthorizeView>
                         <li>
@@ -28,13 +29,13 @@
                                     <h1 style="color: red">Offline</h1>
                                 </Offline>
                             </Connection>
-                        </li>-->
+                        </li>
                     </ul>
                 </div>
                 <div class="aln-right">
                 </div>
             </div>
-            </NotAuthorized>
+        <AuthorizeView>
             <Authorized>
                 <div id="header" @onclick="ToggleNavMenu">
                     <NavMenu />
@@ -84,5 +85,9 @@
             fullscreen = !( await JS.InvokeAsync<bool>("closeFullscreen"));
         }
 
+    }
+    public void Logout()
+    {
+        ((CustomAuthStateProvidedr)AuthStateProv).MarkUserAsNotAuthenticated();
     }
 }
