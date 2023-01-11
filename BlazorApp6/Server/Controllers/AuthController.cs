@@ -5,6 +5,9 @@ using System.Security.Cryptography;
 using System.Text;
 using BlazorApp6.Server.Models;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -14,7 +17,7 @@ namespace BlazorApp6.Server.Controllers
     {
         private readonly appdbContext _context;
         private readonly AuthSettings _appIdentitySettings;
-        User user = new User();
+        public static User user = new ();
 
         public AuthController(appdbContext context, IOptions<AuthSettings> appAuthSettingsAccessor)
         {
@@ -32,6 +35,7 @@ namespace BlazorApp6.Server.Controllers
             user.Userlogin = CreatePasswordHash(regUserDTO.Userlogin);
 
             user.Pass = CreatePasswordHash(regUserDTO.Pass);
+
             return Ok(user);
         }
         private byte[] CreatePasswordHash(string password)
@@ -69,12 +73,45 @@ namespace BlazorApp6.Server.Controllers
             }
             return salt;
         }
-        [HttpPost("login")]
+        private bool VerifyPasswordHash(string password, byte[] pass)
+        {
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password));
+
+            argon2.DegreeOfParallelism = _appIdentitySettings.Passinfo.DegreeOfParallelism;
+            argon2.MemorySize = _appIdentitySettings.Passinfo.MemorySize;
+            argon2.Iterations = _appIdentitySettings.Passinfo.Iterations;
+            argon2.Salt = pass[0.._appIdentitySettings.Passinfo.SaltLen];
+
+            return pass[(_appIdentitySettings.Passinfo.SaltLen)..].SequenceEqual(argon2.GetBytes(_appIdentitySettings.Passinfo.PassLen));
+        }
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name,user.Username),
+                //new Claim(ClaimTypes.Role,'user' )
+            };
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_appIdentitySettings.Jwtoken.Token));
+            var cred = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddDays(2),signingCredentials: cred);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
+
+        [HttpGet("TestLog")]
+        public async Task<ActionResult<User>> TestLog()
+        {
+            return Ok(user);
+        }
+        [HttpPost("Login")]
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult<string>> Login(LogUserDTO logUserDTO)
         {
-            if(user.Userlogin != logUserDTO.Userlogin) { return BadRequest("MIA"); }
-            return Ok(user.Username);
+            if(!VerifyPasswordHash(logUserDTO.Userlogin,user.Userlogin)) { return BadRequest("MIA"); }
+            return CreateToken(user);
         }
     }
 }

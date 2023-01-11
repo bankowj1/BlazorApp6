@@ -5,6 +5,7 @@
         public Passinfo Passinfo { get; set; }
         public Passreq Passreq { get; set; }
         public Lockout Lockout { get; set; }
+        public Jwtoken Jwtoken { get; set; }
     }
 
     public class Passinfo
@@ -31,5 +32,8 @@
         public int DefaultLockoutTimeSpanInMins { get; set; }
         public int MaxFailedAccessAttempts { get; set; }
     }
-
+    public class Jwtoken
+    {
+        public string Token { get; set; }  
+    }
 }

@@ -8,7 +8,7 @@ namespace BlazorApp6.Shared.Models
 {
     public partial class LogUserDTO
     {
-        public byte[] Userlogin { get; set; } = null!;
-        public byte[] Pass { get; set; } = null!;
+        public string Userlogin { get; set; } = null!;
+        public string Pass { get; set; } = null!;
     }
 }
