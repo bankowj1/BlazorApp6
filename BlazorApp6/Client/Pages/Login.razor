@@ -4,16 +4,26 @@
 @inject HttpClient HttpClient
 
 <div class="col-12">
-    <input type="text" @bind-value="_loginViewModel.Userlogin" class="centered" placeholder="Login">
-    <br />
-    <input type="text" @bind-value="_loginViewModel.Username" class="centered" placeholder="Username">
-    <br />
-    <input type="text" @bind-value="_loginViewModel.Email" class="centered" placeholder="Email">
-    <br />
-    <input type="text" @bind-value="_loginViewModel.Password" class="centered" placeholder="Password">
-    <br />
-    <button class="btn btn-primary" @onclick="UpdateProfile">Update Profile</button>
-    <button class="btn btn-primary" @onclick="GetProfile">Get Profile</button>
+    <EditForm Model="_loginViewModel" OnSubmit="ItemSubmit">
+        <div>
+            <label for="Login"> Name </label>
+            <InputText id="name" @bind-Value="_loginViewModel.Userlogin" class="gtr-150"></InputText>
+        </div>
+        <div>
+            <label for="Password"> Name </label>
+            <InputText id="Password" @bind-Value="_loginViewModel.Password" class="gtr-150"></InputText>
+        </div>
+        <div>
+            <label for="Email"> Name </label>
+            <InputText id="Email" @bind-Value="_loginViewModel.Email" class="gtr-150"></InputText>
+        </div>
+        <div>
+            <label for="Username"> Name </label>
+            <InputText id="Username" @bind-Value="_loginViewModel.Username" class="gtr-150"></InputText>
+        </div>
+        <button class="btn btn-primary" @onclick="UpdateProfile">Update Profile</button>
+        <button class="btn btn-primary" @onclick="GetProfile">Get Profile</button>
+    </EditForm>
 </div>
 
 @code {
@@ -39,5 +49,17 @@
         _loginViewModel.Username = _sanitizer.Sanitize(_loginViewModel.Username);
         _loginViewModel.Email = _sanitizer.Sanitize(_loginViewModel.Email);
         _loginViewModel.Password = _sanitizer.Sanitize(_loginViewModel.Password);
+    }
+    async Task ItemSubmit()
+    {
+        SanitizeInput();
+        /*if (Id == null)
+        {
+            //await useSer.CreateItemAsync(_loginViewModel);
+        }
+        else
+        {
+            //await useSer.UpdateItemAsync(_loginViewModel);
+        }*/
     }
 }

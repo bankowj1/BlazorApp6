@@ -1,56 +1,64 @@
 ﻿@inherits LayoutComponentBase
 @inject IJSRuntime JS
-<body class="@NavMenuCssClass">
-    <div id="topping">
-        <div class="left">
-            <ul>
-                <li> <a href="">Home</a></li>
-                <li> <a href="" @onclick="FullScreen">Fullscreen</a></li>
-                <li> <a href="login">Login</a></li>
-                <!--<AuthorizeView>
-                    <Authorized>
-                        <li> <a href="" @onclick="(()=>Logout())">Logout</a></li>
-                    </Authorized>
-                    <NotAuthorized>
-                        <li> <a href="login" >Login</a></li>
-                        <li> <a href="register" >Register</a></li>
-                    </NotAuthorized>
-                </AuthorizeView>
-                <li>
-                    <Connection>
-                        <Online>
-                            <h1 style="color: green">Online</h1>
-                        </Online>
-                        <Offline>
-                            <h1 style="color: red">Offline</h1>
-                        </Offline>
-                    </Connection>
-                </li>-->
-            </ul>
-        </div>
-        <div class="aln-right">
 
-        </div>
-    </div>
-    <div id="header" @onclick="ToggleNavMenu">
-        <NavMenu />
-    </div>
+    <body class="@NavMenuCssClass">
+        <AuthorizeView>
+            <NotAuthorized>
+            <div id="topping">
+                <div class="left">
+                    <ul>
+                        <li> <a href="">Home</a></li>
+                        <li> <a href="" @onclick="FullScreen">Fullscreen</a></li>
+                        <li> <a href="login">Login</a></li>
+                        <!--<AuthorizeView>
+                            <Authorized>
+                                <li> <a href="" @onclick="(()=>Logout())">Logout</a></li>
+                            </Authorized>
+                            <NotAuthorized>
+                                <li> <a href="login" >Login</a></li>
+                                <li> <a href="register" >Register</a></li>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                        <li>
+                            <Connection>
+                                <Online>
+                                    <h1 style="color: green">Online</h1>
+                                </Online>
+                                <Offline>
+                                    <h1 style="color: red">Offline</h1>
+                                </Offline>
+                            </Connection>
+                        </li>-->
+                    </ul>
+                </div>
+                <div class="aln-right">
+                </div>
+            </div>
+            </NotAuthorized>
+            <Authorized>
+                <div id="header" @onclick="ToggleNavMenu">
+                    <NavMenu />
+                </div>
 
-    <div id="main">
-        <h1>
-            sth
-        </h1>
-        @Body
-    </div>
-    <div id="headerToggle">
-        <a href="#header" class="toggle" @onclick="ToggleNavMenu"></a>
-    </div>
-    <div id="footer">
-        <div class="right">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-    </div>
- </body>
+                <div id="main">
+                    <h1>
+                        sth
+                    </h1>
+                    @Body
+                </div>
+                <div id="headerToggle">
+                    <a href="#header" class="toggle" @onclick="ToggleNavMenu"></a>
+                </div>
+                <div id="footer">
+                    <div class="right">
+                        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                    </div>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </body>
+
+
 
 
 
