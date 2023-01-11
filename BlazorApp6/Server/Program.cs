@@ -1,5 +1,6 @@
 global using BlazorApp6.Shared.Models;
 global using Microsoft.EntityFrameworkCore;
+using BlazorApp6.Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<appdbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AppDB")));
-
+builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
