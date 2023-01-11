@@ -4,10 +4,7 @@
     {
         LogUserDTO log { get; set; }
         RegUserDTO reg { get; set; }
-        Task<string> LoginAsync(string userlogin, string password);
-
-        Task<bool> LogoutAsync();
-
-        Task<bool> RegisterAsync(string username, string userlogin, string email, string password);
+        Task<string> LoginAsync(LogUserDTO lg);
+        Task<bool> RegisterAsync(RegUserDTO rg);
     }
 }

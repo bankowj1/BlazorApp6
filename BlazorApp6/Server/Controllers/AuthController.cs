@@ -26,7 +26,7 @@ namespace BlazorApp6.Server.Controllers
             _appIdentitySettings = appAuthSettingsAccessor.Value;
         }
         [HttpPost("Register")]
-        public async Task<ActionResult<User>> Register(RegUserDTO regUserDTO)
+        public async Task<ActionResult<bool>> Register(RegUserDTO regUserDTO)
         {
             
             user.Username = regUserDTO.Username;
@@ -37,7 +37,7 @@ namespace BlazorApp6.Server.Controllers
 
             user.Pass = CreatePasswordHash(regUserDTO.Pass);
 
-            return Ok(user);
+            return Ok(true);
         }
         private byte[] CreatePasswordHash(string password)
         {
@@ -116,7 +116,7 @@ namespace BlazorApp6.Server.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult<string>> Login(LogUserDTO logUserDTO)
         {
-            if(!VerifyPasswordHash(logUserDTO.Userlogin,user.Userlogin)) { return BadRequest("MIA"); }
+            if(!VerifyPasswordHash(logUserDTO.Userlogin,user.Userlogin)) { return BadRequest(""); }
             return CreateToken(user);
         }
     }
