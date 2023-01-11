@@ -2,7 +2,12 @@
 @inject IItemService ItemService
 @inject NavigationManager NavMeg
 <div>
+
     <h1> LIst of Items</h1>
+    <h2>Add new Item</h2>
+    <button class="button" @onclick="AddIt">
+        <h3>Create</h3>
+    </button>
     <table class="table">
         <thead>
             <tr>
@@ -43,17 +48,21 @@
 
 
 @code {
-
-    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
     private ItemViewModel _itemViewModel = new ItemViewModel();
     protected override async Task OnInitializedAsync()
     {
         await ItemService.GetItemsAsync();
     }
-    void Modif (int Id){
+    void Modif (int Id)
+    {
         NavMeg.NavigateTo($"itemMod/{Id}");
     }
-    void Del(int ID){
-
+    void Del(int ID)
+    {
+        ItemService.DeleteItemAsync(ID);
+    }
+    void AddIt()
+    {
+        NavMeg.NavigateTo($"itemMod");
     }
 }

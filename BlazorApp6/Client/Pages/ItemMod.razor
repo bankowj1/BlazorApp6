@@ -50,19 +50,23 @@ else
     </div>
     <div>
         <label for="DangerousColor"> Dangerous Color </label>
-        <InputCheckbox id="dangerousColor" @bind-Value="item.DangerousColor" />
+        <InputCheckbox id="dangerousColor" class="input-checkbox100" @bind-Value="item.DangerousColor" />
     </div>
     <br />
     <button type="submit" class="button"> @btnText </button>
+    @if(Id!=null){
+        <button @onclick="Deltask" class="button"> Delete this task </button>
+    }
 </EditForm>
     
     <h5> add list of materials and group </h5>
 
 @code {
+    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
     [Parameter]
     public int? Id { get; set; }
 
-    Item item = new Item { ItemsGroups = null, MaterialsItems = null };
+    Item item = new Item();
     private string btnText = string.Empty;
 
     protected override void OnInitialized()
@@ -72,17 +76,26 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Id == null)
-        {
-
-        }
-        else
+        if (Id != null)
         {
             item = await ItemService.GetItemAsync((int)Id);
         }
     }
     async Task ItemSubmit()
     {
-
+        item.Name = _sanitizer.Sanitize(item.Name);
+        item.Descriptions = _sanitizer.Sanitize(item.Descriptions);
+        if (Id == null)
+        {
+            await ItemService.CreateItemAsync(item);
+        }
+        else
+        {
+            await ItemService.UpdateItemAsync(item);
+        }
+    }
+    async Task Deltask()
+    {
+        await ItemService.DeleteItemAsync(item.Iditem);
     }
 }
