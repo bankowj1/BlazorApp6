@@ -10,9 +10,7 @@
         try {
             navigator.permissions.query(Object.assign({ name: permissionName }, descriptor))
                 .then(function (permission) {
-                    document.getElementById(permissionName + '-status').innerHTML = permission.state;
                     permission.addEventListener('change', function (e) {
-                        document.getElementById(permissionName + '-status').innerHTML = permission.state;
                         handleChange(permissionName, permission.state);
                     });
                 });

@@ -1,16 +1,18 @@
 ﻿@page "/color"
 @inject IJSRuntime JS
 <h3>Color</h3>
-<button>Push me</button>
+<button @onclick="IamPatient">Push me</button>
 
 
 @code {
     public string BackgroundColor { get; set; } = "#ffffff";
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private bool firstRender =true;
+    private async Task IamPatient()
     {
         if (firstRender)
         {
             await JS.InvokeVoidAsync("startDetector");
+            firstRender=!firstRender;
         }
     }
 }
