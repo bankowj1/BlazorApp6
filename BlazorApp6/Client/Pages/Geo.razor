@@ -1,0 +1,34 @@
+﻿@page "/geo"
+@inject IJSRuntime JS
+
+<button @onclick=@GetLocationAsync>Get Location</button>
+
+@if (geoCoordinates is not null)
+{
+    <div>
+        Latitude : @geoCoordinates.Latitude <br />
+        Longitude : @geoCoordinates.Longitude<br />
+        Accuracy : @geoCoordinates.Accuracy
+    </div>
+}
+
+
+
+@code {
+
+    public class GeoCoordinates
+    {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double Accuracy { get; set; }
+    }
+
+    private GeoCoordinates? geoCoordinates = null;
+
+    private async Task GetLocationAsync()
+    {
+        geoCoordinates = await JS.InvokeAsync<GeoCoordinates>("getCurrentPosition");
+    }
+    
+
+}

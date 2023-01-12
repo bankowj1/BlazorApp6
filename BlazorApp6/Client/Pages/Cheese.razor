@@ -1,0 +1,20 @@
+﻿@page "/cheese"
+@inject IJSRuntime JS;
+@using System.Drawing;
+@using System.IO;
+
+<video id="video" width="854" height="480" autoplay></video>
+
+<div>
+    <button type="button" class="btn btn-primary" @onclick="StartVideo">Start</button>
+</div>
+
+
+@code {
+
+    async Task StartVideo()
+    {
+        await JS.InvokeVoidAsync("startVideo");
+    }
+
+}

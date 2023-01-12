@@ -1,0 +1,15 @@
+﻿@page "/clip"
+@using System.Threading.Tasks
+@inject IClipboardService ClipboardService
+
+@code {
+    string fileContent = "";
+    private async void Clipb()
+    {
+        await ClipboardService.CopyToClipboard(fileContent);
+    }
+}
+<EditForm Model="fileContent">
+    <InputTextArea @bind-Value="fileContent" style="width: 400px; height:auto;font-size:20px;"/>
+    <button @onclick="Clipb"> Copy to Clipboard</button>
+</EditForm>

@@ -16,6 +16,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IClipboardService, ClipboardService>();
 builder.Services.AddSingleton<UserViewModel>();
 builder.Services.AddScoped<AuthenticationStateProvider,CustomAuthStateProvidedr >();
 builder.Services.AddAuthorizationCore();

@@ -1,0 +1,31 @@
+﻿@page "/file"
+@using System.Threading.Tasks
+@inject IJSRuntime FileHendler
+
+<div>
+    <button @onclick="getStorageInfo"> Read Storage Estimate</button>
+    <h1> You're currently using about @percent % of your available storage. </h1>
+</div>
+
+@code {
+    string fileContent = "";
+    float percent;
+    private async void OnOpenFile()
+    {
+        fileContent = await FileHendler.InvokeAsync<string>("OpenFile");
+    }
+
+    private async void OnSaveFile()
+    {
+       await FileHendler.InvokeAsync<object>("SaveFile",fileContent);
+    }
+    private async void getStorageInfo()
+    {
+        percent = await FileHendler.InvokeAsync<float>("getStoragePercent");
+    }
+}
+<EditForm Model="fileContent">
+    <InputTextArea @bind-Value="fileContent" style="width: 400px; height:auto;font-size:20px;"/>
+    <button @onclick="OnOpenFile"> Open file</button>
+    <button @onclick="OnSaveFile"> Save file</button>
+</EditForm>
