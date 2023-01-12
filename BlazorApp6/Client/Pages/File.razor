@@ -2,16 +2,9 @@
 @using System.Threading.Tasks
 @inject IJSRuntime FileHendler
 
-<div>
-    <button @onclick="getStorageInfo"> Read Storage Estimate</button>
-    <h1> You're currently using about @percent % of your available storage. </h1>
-    <button @onclick="RequestPermission">Request Persistent Storage Permission</button>
-</div>
-
 @code {
     private HtmlSanitizer _sanitizer = new HtmlSanitizer();
     string fileContent = "";
-    decimal percent;
     private async void OnOpenFile()
     {
         var file= await FileHendler.InvokeAsync<string>("OpenFile");
@@ -21,15 +14,9 @@
 
     private async void OnSaveFile()
     {
-       await FileHendler.InvokeAsync<object>("SaveFile",fileContent);
-    }
-    private async void getStorageInfo()
-    {
-        percent = await FileHendler.InvokeAsync<decimal>("getStoragePercent");
-    }
-    private async Task RequestPermission()
-    {
-        await FileHendler.InvokeVoidAsync("requestGeolocation");
+        fileContent = _sanitizer.Sanitize(fileContent);
+        await FileHendler.InvokeAsync<object>("SaveFile",fileContent);
+        StateHasChanged();
     }
 }
 <EditForm Model="fileContent">

@@ -3,11 +3,13 @@
 
 <div>
     <ul>
-        @for (int i = 0; i < Dests.Length; i++)
-            {
+        @for (int i = 0; i < Dests.Length-1; i++)
+        {
+            var tempint = i;
             <li>
                 <h2>@Descs[i]</h2>
-                <button class="button" @onclick="()=>Changeddest(Dests[i])">@Dests[i] </button>
+
+                <button class="button" @onclick="@(() => Changeddest(tempint))">@Dests[i] </button>
             </li>
             }
 
@@ -15,11 +17,13 @@
 
 </div>
 @code{
-    private string[] Dests = { "cheese","Geo" };
-    private string[] Descs = { "Camera & Microphone: Audio & Video Capture", "Location & Position: Geolocation" };
-    private void Changeddest(string dest)
+    private string[] Dests = { "counter", "geo", "counter", "blue", "cheese", "counter", "file", "clip", "geo", "counter" };
+    private string[] Descs = { "Seamless Experience:Credentials", "Native Behaviors:Permissions", "App Lifecycle", "Surroundings:Bluetooth",
+    "Camera & Microphone: Audio & Video Capture", "Device Features:Online State", "Operating System: File Access","Input: Clipboard (Copy & Paste)",
+    "Location & Position: Geolocation","Screen & Output: Fullscreen" };
+    void Changeddest(int i)
     {
-        NavMeg.NavigateTo("/" + dest);
+        NavMeg.NavigateTo("/" + Dests[i]);
     }
 }
 

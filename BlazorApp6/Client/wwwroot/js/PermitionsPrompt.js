@@ -3,9 +3,7 @@
 
     function handleChange(permissionName, newState) {
         var timeBadge = new Date().toTimeString().split(' ')[0];
-        var newStateInfo = document.createElement('p');
-        newStateInfo.innerHTML = '' + timeBadge + ' State of ' + permissionName + ' permission status changed to ' + newState + '.';
-        logTarget.appendChild(newStateInfo);
+        
     }
 
     function checkPermission(permissionName, descriptor) {

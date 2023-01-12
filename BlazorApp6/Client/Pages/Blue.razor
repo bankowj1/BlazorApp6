@@ -1,0 +1,14 @@
+﻿@page "/blue"
+@inject IJSRuntime JS
+<h3>Blue</h3>
+<div>
+    <button @onclick="readBattery">Read Bluetooth device's</button>
+</div>
+<h2>Poziom baterii wynosi: @battery %</h2>
+
+@code {
+    private uint battery;
+    private async void readBattery(){
+        battery = await JS.InvokeAsync<uint>("readBatteryLevel");
+    }
+}

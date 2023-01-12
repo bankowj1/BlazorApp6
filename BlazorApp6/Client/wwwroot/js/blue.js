@@ -14,34 +14,21 @@
 //Da ba dee da ba di
 //Da ba dee da ba di
 //Da ba dee da ba di
-function readBatteryLevel() {
-    var $target = document.getElementById('target');
-
+async function readBatteryLevel() {
     if (!('bluetooth' in navigator)) {
-        $target.innerText = 'Bluetooth API not supported.';
-        return;
+        throw new Error('Bluetooth API not supported.');
     }
 
-    navigator.bluetooth.requestDevice({
-        filters: [{
-            services: ['battery_service']
-        }]
-    })
-        .then(function (device) {
-            return device.gatt.connect();
-        })
-        .then(function (server) {
-            return server.getPrimaryService('battery_service');
-        })
-        .then(function (service) {
-            return service.getCharacteristic('battery_level');
-        })
-        .then(function (characteristic) {
-            return characteristic.readValue();
-        })
-        .then(function (value) {
-            $target.innerHTML = 'Battery percentage is ' + value.getUint8(0) + '.';
-        })
-        .catch(function (error) {
-            $target.innerText = error;
-        });
+    const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+
+    const server = await device.gatt.connect();
+    const batteryService = await server.getPrimaryService("battery_service");
+    const batteryLevelCharacteristic = await batteryService.getCharacteristic(
+        "battery_level"
+    );
+    // Convert recieved buffer to number
+    const batteryLevel = await batteryLevelCharacteristic.readValue();
+    const batteryPercent = await batteryLevel.getUint8(0);
+
+    return batteryPercent;
+}
