@@ -5,6 +5,7 @@
 <div>
     <button @onclick="getStorageInfo"> Read Storage Estimate</button>
     <h1> You're currently using about @percent % of your available storage. </h1>
+    <button @onclick="RequestPermission">Request Persistent Storage Permission</button>
 </div>
 
 @code {
@@ -25,6 +26,10 @@
     private async void getStorageInfo()
     {
         percent = await FileHendler.InvokeAsync<decimal>("getStoragePercent");
+    }
+    private async Task RequestPermission()
+    {
+        await FileHendler.InvokeVoidAsync("requestGeolocation");
     }
 }
 <EditForm Model="fileContent">

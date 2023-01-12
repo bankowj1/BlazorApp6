@@ -11,7 +11,7 @@
         Accuracy : @geoCoordinates.Accuracy
     </div>
 }
-
+<button @onclick="RequestPermission">Request Persistent Storage Permission</button>
 
 
 @code {
@@ -29,6 +29,9 @@
     {
         geoCoordinates = await JS.InvokeAsync<GeoCoordinates>("getCurrentPosition");
     }
-    
+    private async Task RequestPermission()
+    {
+        await JS.InvokeVoidAsync("requestGeolocation");
+    }
 
 }

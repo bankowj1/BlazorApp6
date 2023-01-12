@@ -1,0 +1,16 @@
+﻿@page "/color"
+@inject IJSRuntime JS
+<h3>Color</h3>
+<button>Push me</button>
+
+
+@code {
+    public string BackgroundColor { get; set; } = "#ffffff";
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("startDetector");
+        }
+    }
+}

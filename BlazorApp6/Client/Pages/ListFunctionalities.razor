@@ -1,0 +1,26 @@
+﻿@page "/listFunctionalities"
+@inject NavigationManager NavMeg
+
+<div>
+    <ul>
+        @for (int i = 0; i < Dests.Length; i++)
+            {
+            <li>
+                <h2>@Descs[i]</h2>
+                <button class="button" @onclick="()=>Changeddest(Dests[i])">@Dests[i] </button>
+            </li>
+            }
+
+    </ul>
+
+</div>
+@code{
+    private string[] Dests = { "cheese","Geo" };
+    private string[] Descs = { "Camera & Microphone: Audio & Video Capture", "Location & Position: Geolocation" };
+    private void Changeddest(string dest)
+    {
+        NavMeg.NavigateTo("/" + dest);
+    }
+}
+
+
