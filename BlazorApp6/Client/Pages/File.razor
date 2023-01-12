@@ -8,11 +8,14 @@
 </div>
 
 @code {
+    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
     string fileContent = "";
-    float percent;
+    decimal percent;
     private async void OnOpenFile()
     {
-        fileContent = await FileHendler.InvokeAsync<string>("OpenFile");
+        var file= await FileHendler.InvokeAsync<string>("OpenFile");
+        fileContent = _sanitizer.Sanitize(file);
+        StateHasChanged();
     }
 
     private async void OnSaveFile()
@@ -21,7 +24,7 @@
     }
     private async void getStorageInfo()
     {
-        percent = await FileHendler.InvokeAsync<float>("getStoragePercent");
+        percent = await FileHendler.InvokeAsync<decimal>("getStoragePercent");
     }
 }
 <EditForm Model="fileContent">
