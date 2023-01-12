@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text.Json;
 using Blazored.SessionStorage;
 
@@ -7,17 +8,23 @@ namespace BlazorApp6.Client.Services
     public class CustomAuthStateProvidedr : AuthenticationStateProvider
     {
         private ISessionStorageService _sessionStorageService;
-        public CustomAuthStateProvidedr(ISessionStorageService sessionStorageService)
+        private readonly HttpClient _httpClient;
+
+        public CustomAuthStateProvidedr(ISessionStorageService sessionStorageService, HttpClient httpClient)
         {
             _sessionStorageService = sessionStorageService;
+            _httpClient = httpClient;
         }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = null;
             ClaimsIdentity identity;
             string token = await _sessionStorageService.GetItemAsStringAsync("token");
             if (token != null)
             {
                 identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+                _httpClient.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("Bearer",token.Replace("\"",""));
             }
             else
             {

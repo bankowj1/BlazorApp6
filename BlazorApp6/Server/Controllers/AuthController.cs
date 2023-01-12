@@ -31,11 +31,14 @@ namespace BlazorApp6.Server.Controllers
             
             user.Username = regUserDTO.Username;
             
-            user.Email = CreatePasswordHash(regUserDTO.Email); 
+            user.Email = Encoding.UTF8.GetBytes(regUserDTO.Email); 
 
-            user.Userlogin = CreatePasswordHash(regUserDTO.Userlogin);
+            user.Userlogin = Encoding.UTF8.GetBytes(regUserDTO.Userlogin);
 
             user.Pass = CreatePasswordHash(regUserDTO.Pass);
+
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
 
             return Ok(true);
         }
@@ -116,8 +119,13 @@ namespace BlazorApp6.Server.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult<string>> Login(LogUserDTO logUserDTO)
         {
-            if(!VerifyPasswordHash(logUserDTO.Userlogin,user.Userlogin)) { return BadRequest(""); }
-            return CreateToken(user);
+            User lognUser = await _context.Users
+                        .Where(u => u.Userlogin == Encoding.UTF8.GetBytes(logUserDTO.Userlogin))
+                        .FirstOrDefaultAsync();
+            if (lognUser == null)
+                return BadRequest("");
+            if (!VerifyPasswordHash(logUserDTO.Pass, lognUser.Pass)) { return BadRequest(""); }
+            return Ok(CreateToken(lognUser));
         }
     }
 }

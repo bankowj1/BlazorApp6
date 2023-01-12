@@ -4,6 +4,8 @@
 @using BlazorApp6.Shared.Models
 @inject IAuthService AuthService
 @inject ISessionStorageService SesStorage
+@inject AuthenticationStateProvider CustomAuthStateProvidedr
+@inject NavigationManager NavMeg
 
 <div class="col-12">
     <EditForm Model="_loginViewModel" OnSubmit="ItemSubmit">
@@ -25,17 +27,27 @@
 
     private UserViewModel _loginViewModel = new UserViewModel();
     private HtmlSanitizer _sanitizer = new HtmlSanitizer();
-
+    private string mess = "Please Login";
     private void SanitizeInput()
     {  
         _loginViewModel.Userlogin = _sanitizer.Sanitize(_loginViewModel.Userlogin);
         _loginViewModel.Password = _sanitizer.Sanitize(_loginViewModel.Password);
+        _loginViewModel.Username = "12345678";
+        _loginViewModel.Email = "12345678";
     }
     async Task ItemSubmit()
     {
         SanitizeInput();
         LogUserDTO user = _loginViewModel;
         var token = await AuthService.LoginAsync(user);
-        await SesStorage.SetItemAsStringAsync("token", token);
+        if(token!=null){
+            await SesStorage.SetItemAsStringAsync("token", token);
+            await CustomAuthStateProvidedr.GetAuthenticationStateAsync();
+            NavMeg.NavigateTo("/");
+        }
+        else
+        {
+            mess = "Sth went wrong try again";
+        }
     }
 }
