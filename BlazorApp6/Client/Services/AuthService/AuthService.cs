@@ -22,8 +22,10 @@ namespace BlazorApp6.Client.Services.AuthService
         public async Task<string> LoginAsync(LogUserDTO lg)
         {
             var res = await _httpClient.PostAsJsonAsync("api/Auth/Login", lg);
-            if (res == null)
-                throw new Exception("not loged");
+            if (!res.IsSuccessStatusCode)
+            {
+                return string.Empty;
+            }
             return await res.Content.ReadAsStringAsync(); 
         }
 

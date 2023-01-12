@@ -42,7 +42,15 @@
         var token = await AuthService.LoginAsync(user);
         if(token!=null){
             await SesStorage.SetItemAsStringAsync("token", token);
-            await CustomAuthStateProvidedr.GetAuthenticationStateAsync();
+            try{
+                await CustomAuthStateProvidedr.GetAuthenticationStateAsync();
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex);
+                return;
+            }
+            
             NavMeg.NavigateTo("/");
         }
         else

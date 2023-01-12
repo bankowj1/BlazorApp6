@@ -20,8 +20,12 @@ namespace BlazorApp6.Client.Services
             _httpClient.DefaultRequestHeaders.Authorization = null;
             ClaimsIdentity identity;
             string token = await _sessionStorageService.GetItemAsStringAsync("token");
-            if (token != null)
+            if (token != null )
             {
+                if (token == string.Empty)
+                {
+                    throw new ArgumentException("empty token no authorization for u");
+                }
                 identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
                 _httpClient.DefaultRequestHeaders.Authorization = 
                     new AuthenticationHeaderValue("Bearer",token.Replace("\"",""));
