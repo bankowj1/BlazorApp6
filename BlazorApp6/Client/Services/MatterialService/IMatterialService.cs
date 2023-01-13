@@ -1,9 +1,9 @@
 ﻿namespace BlazorApp6.Client.Services.MatterialService
 {
-    public interface IMetterialService
+    public interface IMatterialService
     {
         List<Matterial> matterials { get; set; }
-        IEnumerable<MaterialsItem> matsItem { get; set; }
+        List<Matterial> matsItem { get; set; }
         Task<Matterial> GetMetterialAsync(int id);
 
         Task UpdateMetterialAsync(Matterial item);

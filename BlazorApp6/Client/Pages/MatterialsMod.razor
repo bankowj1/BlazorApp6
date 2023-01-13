@@ -1,0 +1,75 @@
+﻿@page "/matterialsMod"
+@page "/matterialsMod/{id:int}"
+@using BlazorApp6.Client.Services.MatterialService
+
+@inject IMatterialService IMatterialService
+@if(Id == null)
+{
+    <h1>Add Item</h1>
+}
+else
+{
+    <h1>Modify Item</h1>
+
+}
+
+<EditForm Model="mat" OnSubmit="MatSubmit">
+    <div>
+        <label for="Materialname"> Materialname </label>
+        <InputText id="materialname" @bind-Value="mat.Materialname" class="gtr-150"></InputText>
+    </div>
+    <div>
+        <label for="Descriptions"> Descriptions </label>
+        <InputText id="descriptions" @bind-Value="mat.Descriptions" class="gtr-512" />
+    </div>
+    <div>
+        <label for="TempOfWash"> TempOfWash </label>
+        <InputNumber id="tempOfWash" @bind-Value="mat.TempOfWash" min="0" class="gtr-150" />
+    </div>
+    <br />
+    <button type="submit" class="button"> @btnText </button>
+    @if(Id!=null){
+        <button @onclick="Deltask" class="button"> Delete this material </button>
+    }
+</EditForm>
+    
+
+@code {
+    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+    [Parameter]
+    public int? Id { get; set; }
+
+    Matterial mat = new Matterial();
+    private string btnText = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        btnText = Id == null ? "Save New" : "Update";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            mat = await IMatterialService.GetMetterialAsync((int)Id);
+        }
+    }
+    async Task MatSubmit()
+    {
+        mat.Materialname = _sanitizer.Sanitize(mat.Materialname);
+        if (mat.Descriptions != null)
+            mat.Descriptions = _sanitizer.Sanitize(mat.Descriptions);
+        if (Id == null)
+        {
+            await IMatterialService.CreateMetterialAsync(mat);
+        }
+        else
+        {
+            await IMatterialService.UpdateMetterialAsync(mat);
+        }
+    }
+    async Task Deltask()
+    {
+        await IMatterialService.DeleteMetterialAsync(mat.Idmat);
+    }
+}

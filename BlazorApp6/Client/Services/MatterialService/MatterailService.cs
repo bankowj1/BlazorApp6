@@ -4,13 +4,13 @@ using System.Net.Http.Json;
 
 namespace BlazorApp6.Client.Services.MatterialService
 {
-    public class MatterialService : IMetterialService
+    public class MatterialService : IMatterialService
     {
         private readonly HttpClient _httpClient;
         private readonly NavigationManager _navigationManager;
 
         public List<Matterial> matterials { get; set; }
-        public IEnumerable<MaterialsItem> matsItem { get; set; }
+        public List<Matterial> matsItem { get; set; }
 
         public MatterialService(HttpClient httpClient, NavigationManager navigationManager)
         {
@@ -23,7 +23,7 @@ namespace BlazorApp6.Client.Services.MatterialService
             var res = await _httpClient.PostAsJsonAsync("api/Matterials", item);
             if (res == null)
                 throw new Exception("not posted");
-            _navigationManager.NavigateTo("matList");
+            _navigationManager.NavigateTo("matterialList");
         }
 
         public async Task DeleteMetterialAsync(int id)
@@ -31,7 +31,7 @@ namespace BlazorApp6.Client.Services.MatterialService
             var res = await _httpClient.DeleteAsync($"api/Matterials/{id}");
             if (res == null)
                 throw new Exception("not deleted");
-            _navigationManager.NavigateTo("matList");
+            _navigationManager.NavigateTo("matterialList");
         }
 
         public async Task<Matterial> GetMetterialAsync(int id)
@@ -57,11 +57,14 @@ namespace BlazorApp6.Client.Services.MatterialService
         public async Task GetMetterialsOfItemAsync(int id)
         {
             await GetMetterialsAsync();
-            var res = await _httpClient.GetFromJsonAsync<List<MaterialsItem>>($"api/MaterialsItems/Item/{id}");
+            var res = await _httpClient.GetFromJsonAsync<IEnumerable<MaterialsItem>>($"api/MaterialsItems/Item/{id}");
             if (res == null)
                 throw new Exception("not found");
-            matterials = matterials.Where(o => res.Contains(o.Idmat);
-
+            var tmp = new List<Matterial>();
+            foreach (var item in res)
+            {
+                tmp.Add(item.Mat);
+            }
         }
 
         public async Task UpdateMetterialAsync(Matterial item)
@@ -69,7 +72,7 @@ namespace BlazorApp6.Client.Services.MatterialService
             var res = await _httpClient.PutAsJsonAsync($"api/Matterials/{item.Idmat}", item);
             if (res == null)
                 throw new Exception("not posted");
-            _navigationManager.NavigateTo("matList");
+            _navigationManager.NavigateTo("matterialList");
         }
     }
 }

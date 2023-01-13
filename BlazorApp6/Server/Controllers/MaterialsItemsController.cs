@@ -1,6 +1,7 @@
 ﻿using BlazorApp6.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -62,7 +63,6 @@ namespace BlazorApp6.Server.Controllers
             {
                 return NotFound();
             }
-
             return materialsItem;
         }
 

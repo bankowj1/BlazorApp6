@@ -8,8 +8,7 @@
 
     function checkPermission(permissionName, descriptor) {
         try {
-            navigator.permissions.query(Object.assign({ name: permissionName }, descriptor))
-                .then(function (permission) {
+            navigator.permissions.query({ name: permissionName }, descriptor).then(function (permission) {
                     permission.addEventListener('change', function (e) {
                         handleChange(permissionName, permission.state);
                     });
@@ -20,15 +19,15 @@
 
     checkPermission('geolocation');
     checkPermission('notifications');
-    checkPermission('push', { userVisibleOnly: true });
+    //checkPermission('push', { userVisibleOnly: true });
     checkPermission('midi', { sysex: true });
     checkPermission('camera');
     checkPermission('microphone');
     checkPermission('background-sync');
-    checkPermission('ambient-light-sensor');
+    /*checkPermission('ambient-light-sensor');
     checkPermission('accelerometer');
     checkPermission('gyroscope');
-    checkPermission('magnetometer');
+    checkPermission('magnetometer');*/
 
     var noop = function () { };
     navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);

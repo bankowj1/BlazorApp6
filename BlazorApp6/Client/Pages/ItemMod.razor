@@ -1,7 +1,8 @@
 ﻿@page "/itemMod"
 @page "/itemMod/{id:int}"
+@using BlazorApp6.Client.Services.MatterialService
 @inject IItemService ItemService
-
+@inject IMatterialService IMatterialService
 @if(Id == null)
 {
     <h1>Add Item</h1>
@@ -55,10 +56,15 @@ else
     <br />
     <button type="submit" class="button"> @btnText </button>
     @if(Id!=null){
-        <button @onclick="Deltask" class="button"> Delete this task </button>
+        <button @onclick="Deltask" class="button"> Delete this item </button>
+        <button @onclick="GetMatterials" class="button"> Get Materials </button>
     }
 </EditForm>
-    
+@if(mat!=null)
+{
+    <MatterialsListed Matterials="@mat" />
+}
+
 
 @code {
     private HtmlSanitizer _sanitizer = new HtmlSanitizer();
@@ -66,6 +72,7 @@ else
     public int? Id { get; set; }
 
     Item item = new Item();
+    List<Matterial> mat = new();
     private string btnText = string.Empty;
 
     protected override void OnInitialized()
@@ -84,7 +91,7 @@ else
     {
         item.Name = _sanitizer.Sanitize(item.Name);
         if(item.Descriptions != null)
-        item.Descriptions = _sanitizer.Sanitize(item.Descriptions);
+            item.Descriptions = _sanitizer.Sanitize(item.Descriptions);
         if (Id == null)
         {
             await ItemService.CreateItemAsync(item);
@@ -97,5 +104,10 @@ else
     async Task Deltask()
     {
         await ItemService.DeleteItemAsync(item.Iditem);
+    }
+    async Task GetMatterials()
+    {
+        await IMatterialService.GetMetterialsOfItemAsync(item.Iditem);
+        mat = IMatterialService.matsItem;
     }
 }

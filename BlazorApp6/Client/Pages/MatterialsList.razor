@@ -1,0 +1,15 @@
+﻿@page "/matterialList"
+@using BlazorApp6.Client.Services.MatterialService
+@inject IMatterialService IMatterialService
+
+<MatterialsListed Matterials="@Matterials"/>
+
+
+@code {
+    List<Matterial> Matterials = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await IMatterialService.GetMetterialsAsync();
+        Matterials = IMatterialService.matterials;
+    }
+}

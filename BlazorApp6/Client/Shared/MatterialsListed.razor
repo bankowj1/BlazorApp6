@@ -1,0 +1,61 @@
+﻿@using BlazorApp6.Client.Services.MatterialService
+@using BlazorApp6.ViewModels
+@inject IMatterialService IMatterialService
+@inject NavigationManager NavMeg
+@if (Matterials != null)
+{
+    <div>
+        <h1>List of Materials</h1>
+        <h2>Add new Material</h2>
+        <button class="button" @onclick="AddIt">
+            <h3>Create</h3>
+        </button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Materialname</th>
+                    <th>Descriptions</th>
+                    <th>TempOfWash</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Matterials)
+                {
+                    <tr>
+                        <td>@item.Materialname</td>
+                        <td>@item.Descriptions</td>
+                        <td>@item.TempOfWash</td>
+                        <td>
+                            <button class="button" @onclick="(() => Modif(item.Idmat))">
+                                <h3>modify</h3>
+                            </button>
+                        </td>
+                        <th>
+                            <button class="button" @onclick="(() => Del(item.Idmat))">
+                                <h3>del</h3>
+                            </button>
+                        </th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+
+@code {
+    [Parameter] public List<Matterial> Matterials { get; set; }
+
+    void Modif (int Id)
+    {
+        NavMeg.NavigateTo($"matterialsMod/{Id}");
+    }
+    void Del(int ID)
+    {
+        IMatterialService.DeleteMetterialAsync(ID);
+    }
+    void AddIt()
+    {
+        NavMeg.NavigateTo($"matterialsMod");
+    }
+}
