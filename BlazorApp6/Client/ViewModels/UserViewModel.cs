@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Ganss.Xss;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorApp6.ViewModels
 {
@@ -44,6 +45,14 @@ namespace BlazorApp6.ViewModels
                 Userlogin = user.Userlogin,
                 Pass = user.Password
             };
+        }
+        public void SanitizeInput()
+        {
+            HtmlSanitizer _sanitizer = new HtmlSanitizer();
+            this.Userlogin = _sanitizer.Sanitize(this.Userlogin);
+            this.Password = _sanitizer.Sanitize(this.Password);
+            this.Email = _sanitizer.Sanitize(this.Email);
+            this.Password = _sanitizer.Sanitize(this.Password);
         }
     }
 }

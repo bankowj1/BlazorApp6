@@ -5,11 +5,12 @@
 @inject IAuthService AuthService
 @inject ISessionStorageService SesStorage
 @inject NavigationManager NavMeg
+@inject UserViewModel _loginViewModel
 
 <h3>@mess</h3>
 <div class="col-12">
-    <EditForm Model="_loginViewModel" OnSubmit="ItemSubmit">
-        <ValidationSummary />
+    <EditForm Model="_loginViewModel" OnValidSubmit="ItemSubmit">
+        <DataAnnotationsValidator />
         <div>
             <label for="Username"> Username </label>
             <InputText id="Username" @bind-Value="_loginViewModel.Username" class="gtr-150"></InputText>
@@ -39,21 +40,13 @@
 
 @code {
     
-    private UserViewModel _loginViewModel = new UserViewModel();
-    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+
     private string mess="Please Register Yourself";
 
-    private void SanitizeInput()
-    {
-        _loginViewModel.Username = _sanitizer.Sanitize(_loginViewModel.Username);
-        _loginViewModel.Userlogin = _sanitizer.Sanitize(_loginViewModel.Userlogin);
-        _loginViewModel.Email = _sanitizer.Sanitize(_loginViewModel.Email);
-        _loginViewModel.Password = _sanitizer.Sanitize(_loginViewModel.Password);
-    }
     async Task ItemSubmit()
     {
 
-        SanitizeInput();
+        _loginViewModel.SanitizeInput();
         RegUserDTO user = _loginViewModel;
         var token = await AuthService.RegisterAsync(user);
         if(token)

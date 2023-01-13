@@ -35,6 +35,7 @@ namespace BlazorApp6.Client.Services.AuthService
             var res = await _httpClient.PostAsJsonAsync("api/Auth/Register", rg);
             if (res == null)
                 throw new Exception("not registered");
+            _navigationManager.NavigateTo("/login");
             return res.IsSuccessStatusCode;
 
         }

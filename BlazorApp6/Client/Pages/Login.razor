@@ -6,9 +6,11 @@
 @inject ISessionStorageService SesStorage
 @inject AuthenticationStateProvider CustomAuthStateProvidedr
 @inject NavigationManager NavMeg
+@inject UserViewModel _loginViewModel
 
 <div class="col-12">
-    <EditForm Model="_loginViewModel" OnSubmit="ItemSubmit">
+    <EditForm Model="_loginViewModel" OnValidSubmit="ItemSubmit">
+        <DataAnnotationsValidator />
         <div>
             <label for="Login"> Login </label>
             <InputText id="name" @bind-Value="_loginViewModel.Userlogin" class="gtr-150"></InputText>
@@ -25,19 +27,13 @@
 
 @code {
 
-    private UserViewModel _loginViewModel = new UserViewModel();
-    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+
     private string mess = "Please Login";
-    private void SanitizeInput()
-    {  
-        _loginViewModel.Userlogin = _sanitizer.Sanitize(_loginViewModel.Userlogin);
-        _loginViewModel.Password = _sanitizer.Sanitize(_loginViewModel.Password);
-        _loginViewModel.Username = "12345678";
-        _loginViewModel.Email = "12345678";
-    }
+    
     async Task ItemSubmit()
     {
-        SanitizeInput();
+
+        _loginViewModel.SanitizeInput();
         LogUserDTO user = _loginViewModel;
         var token = await AuthService.LoginAsync(user);
         if(token!=null){
