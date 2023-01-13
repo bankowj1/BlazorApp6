@@ -1,37 +1,75 @@
-﻿namespace BlazorApp6.Client.Services.MatterialService
+﻿using Microsoft.AspNetCore.Components;
+using System.Net.Http;
+using System.Net.Http.Json;
+
+namespace BlazorApp6.Client.Services.MatterialService
 {
     public class MatterialService : IMetterialService
     {
-        public List<Matterial> matterials { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private readonly HttpClient _httpClient;
+        private readonly NavigationManager _navigationManager;
 
-        public Task CreateMetterialAsync(Matterial item)
+        public List<Matterial> matterials { get; set; }
+        public IEnumerable<MaterialsItem> matsItem { get; set; }
+
+        public MatterialService(HttpClient httpClient, NavigationManager navigationManager)
         {
-            throw new NotImplementedException();
+            _httpClient = httpClient;
+            _navigationManager = navigationManager;
         }
 
-        public Task DeleteMetterialAsync(int id)
+        public async Task CreateMetterialAsync(Matterial item)
         {
-            throw new NotImplementedException();
+            var res = await _httpClient.PostAsJsonAsync("api/Matterials", item);
+            if (res == null)
+                throw new Exception("not posted");
+            _navigationManager.NavigateTo("matList");
         }
 
-        public Task<Matterial> GetMetterialAsync(int id)
+        public async Task DeleteMetterialAsync(int id)
         {
-            throw new NotImplementedException();
+            var res = await _httpClient.DeleteAsync($"api/Matterials/{id}");
+            if (res == null)
+                throw new Exception("not deleted");
+            _navigationManager.NavigateTo("matList");
         }
 
-        public Task GetMetterialsAsync()
+        public async Task<Matterial> GetMetterialAsync(int id)
         {
-            throw new NotImplementedException();
+            var res = await _httpClient.GetFromJsonAsync<Matterial>($"api/Matterials/{id}");
+            if (res != null)
+            {
+                return res;
+            }
+            throw new Exception("not found");
         }
 
-        public Task GetMetterialsOfItemAsync(int id)
+        public async Task GetMetterialsAsync()
         {
-            throw new NotImplementedException();
+            var res = await _httpClient.GetFromJsonAsync<List<Matterial>>("api/Matterials");
+            if (res == null)
+            {
+                throw new Exception("not found");
+            }
+            matterials = res;
         }
 
-        public Task UpdateMetterialAsync(Matterial item)
+        public async Task GetMetterialsOfItemAsync(int id)
         {
-            throw new NotImplementedException();
+            await GetMetterialsAsync();
+            var res = await _httpClient.GetFromJsonAsync<List<MaterialsItem>>($"api/MaterialsItems/Item/{id}");
+            if (res == null)
+                throw new Exception("not found");
+            matterials = matterials.Where(o => res.Contains(o.Idmat);
+
+        }
+
+        public async Task UpdateMetterialAsync(Matterial item)
+        {
+            var res = await _httpClient.PutAsJsonAsync($"api/Matterials/{item.Idmat}", item);
+            if (res == null)
+                throw new Exception("not posted");
+            _navigationManager.NavigateTo("matList");
         }
     }
 }

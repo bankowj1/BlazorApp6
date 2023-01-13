@@ -3,7 +3,7 @@
     public interface IMetterialService
     {
         List<Matterial> matterials { get; set; }
-
+        IEnumerable<MaterialsItem> matsItem { get; set; }
         Task<Matterial> GetMetterialAsync(int id);
 
         Task UpdateMetterialAsync(Matterial item);
