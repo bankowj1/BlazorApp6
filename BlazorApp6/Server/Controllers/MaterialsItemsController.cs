@@ -55,9 +55,9 @@ namespace BlazorApp6.Server.Controllers
             return materialsItem;
         }
         [HttpGet("Item/{id}")]
-        public async Task<ActionResult<IEnumerable<MaterialsItem>>> GetItemsGroupOfItem(int id)
+        public async Task<ActionResult<List<MaterialsItem>>> GetItemsGroupOfItem(int id)
         {
-            var materialsItem = await _context.MaterialsItems.Where(mi => mi.ItemId == id).Include(ig => ig.Item).Include(ig => ig.Mat).ToListAsync();
+            var materialsItem = await _context.MaterialsItems.Where(mi => mi.ItemId == id).Include(ig => ig.Mat).ToListAsync();
 
             if (materialsItem == null)
             {
@@ -67,7 +67,7 @@ namespace BlazorApp6.Server.Controllers
         }
 
         [HttpGet("Mat/{id}")]
-        public async Task<ActionResult<IEnumerable<MaterialsItem>>> GetItemsGroupOfMat(int id)
+        public async Task<ActionResult<List<MaterialsItem>>> GetItemsGroupOfMat(int id)
         {
             var materialsItem = await _context.MaterialsItems.Where(mi => mi.MatId == id).Include(ig => ig.Item).Include(ig => ig.Mat).ToListAsync();
 
