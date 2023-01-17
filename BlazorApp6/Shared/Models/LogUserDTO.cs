@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ganss.Xss;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,11 @@ namespace BlazorApp6.Shared.Models
     {
         public string Userlogin { get; set; } = null!;
         public string Pass { get; set; } = null!;
+        public void SanitizeInput()
+        {
+            HtmlSanitizer _sanitizer = new HtmlSanitizer();
+            this.Userlogin = _sanitizer.Sanitize(this.Userlogin);
+            this.Pass = _sanitizer.Sanitize(this.Pass);
+        }
     }
 }

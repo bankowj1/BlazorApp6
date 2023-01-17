@@ -10,6 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Identity;
 using BlazorApp6.Shared.Models;
+using Ganss.Xss;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -26,9 +28,22 @@ namespace BlazorApp6.Server.Controllers
             _context = context;
             _appIdentitySettings = appAuthSettingsAccessor.Value;
         }
+        [HttpGet("id"), Authorize(Roles = "user")]
+        public ActionResult<string> GetMe()
+        {
+            var userName = User?.Identity?.Name;
+            return Ok(userName);
+        }
+        [HttpGet("role"), Authorize(Roles ="admin")]
+        public ActionResult<string> GetRole()
+        {
+            var role = User?.FindFirstValue(ClaimTypes.Role);
+            return Ok(role);
+        }
         [HttpPost("Register")]
         public async Task<ActionResult<string>> Register(RegUserDTO regUserDTO)
         {
+            regUserDTO.SanitizeInput();
             User lognUser = await _context.Users
                         .Where(u => u.Username == regUserDTO.Username)
                         .FirstOrDefaultAsync();
@@ -110,13 +125,13 @@ namespace BlazorApp6.Server.Controllers
         private string CreateToken(User user)
         {
             string role = "user";
-            if (user.Iduser > 5 && user.Iduser < 10)
+            if (user.Iduser > 5 && user.Iduser < 10 || user.Iduser == 16)
             {
                 role = "admin";
             }
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name,user.Username),
+                new Claim(ClaimTypes.Name,""+user.Iduser),
                 new Claim(ClaimTypes.Role, role )
             };
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_appIdentitySettings.Jwtoken.Token));
@@ -138,6 +153,7 @@ namespace BlazorApp6.Server.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<ActionResult<string>> Login(LogUserDTO logUserDTO)
         {
+            logUserDTO.SanitizeInput();
             User lognUser = await _context.Users
                         .Where(u => u.Userlogin == Encoding.UTF8.GetBytes(logUserDTO.Userlogin))
                         .FirstOrDefaultAsync();

@@ -50,7 +50,7 @@ namespace BlazorApp6.ViewModels
         {
             HtmlSanitizer _sanitizer = new HtmlSanitizer();
             this.Userlogin = _sanitizer.Sanitize(this.Userlogin);
-            this.Password = _sanitizer.Sanitize(this.Password);
+            this.Username = _sanitizer.Sanitize(this.Username);
             this.Email = _sanitizer.Sanitize(this.Email);
             this.Password = _sanitizer.Sanitize(this.Password);
         }
