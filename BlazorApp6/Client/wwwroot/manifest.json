@@ -1,11 +1,11 @@
 {
-  "name": "BlazorApp6",
-  "short_name": "BlazorApp6",
-  "start_url": "./",
-  "display": "standalone",
   "background_color": "#555555",
-  "theme_color": "#03173d",
-  "prefer_related_applications": false,
+  "categories": [
+    "lifestyle",
+    "utilities"
+  ],
+  "dir": "auto",
+  "display": "standalone",
   "icons": [
     {
       "src": "icon-512.png",
@@ -19,11 +19,11 @@
     }
   ],
   "lang": "en",
-  "dir": "auto",
-  "scope": "https://blazorapp6server20230113105800.azurewebsites.net",
+  "name": "BlazorApp6",
+  //"scope": "https://blazorapp6server20230113105800.azurewebsites.net",
   "orientation": "natural",
-  "categories": [
-    "lifestyle",
-    "utilities"
-  ]
+  "prefer_related_applications": false,
+  "short_name": "BlazorApp6",
+  "start_url": "./",
+  "theme_color": "#03173d"
 }

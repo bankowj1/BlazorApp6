@@ -45,12 +45,14 @@ builder.Services.AddDbContext<appdbContext>(options => options.UseSqlServer(buil
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection("AuthSettings"));
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseWebAssemblyDebugging();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseWebAssemblyDebugging();
 }
 else
 {

@@ -48,14 +48,14 @@
 
         _loginViewModel.SanitizeInput();
         RegUserDTO user = _loginViewModel;
-        var token = await AuthService.RegisterAsync(user);
-        if(token)
+        var ans = await AuthService.RegisterAsync(user);
+        if (ans == "")
         {
-            NavMeg.NavigateTo("/Login");
+            NavMeg.NavigateTo("/login");
         }
         else
         {
-            mess = "Sth went wrong try again";
+            mess = ans;
         }
         
     }

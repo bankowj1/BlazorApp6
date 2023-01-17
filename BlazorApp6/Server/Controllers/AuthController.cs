@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Identity;
+using BlazorApp6.Shared.Models;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -26,9 +27,23 @@ namespace BlazorApp6.Server.Controllers
             _appIdentitySettings = appAuthSettingsAccessor.Value;
         }
         [HttpPost("Register")]
-        public async Task<ActionResult<bool>> Register(RegUserDTO regUserDTO)
+        public async Task<ActionResult<string>> Register(RegUserDTO regUserDTO)
         {
-            
+            User lognUser = await _context.Users
+                        .Where(u => u.Username == regUserDTO.Username)
+                        .FirstOrDefaultAsync();
+            if(lognUser != null)
+            {
+                return BadRequest("username in use");
+            }
+            foreach (string line in System.IO.File.ReadLines("CommonPasses.txt"))
+            {
+                if(regUserDTO.Pass.Contains(line))
+                {
+                    return BadRequest("to easy password");
+                }
+            }
+
             user.Username = regUserDTO.Username;
             
             user.Email = Encoding.UTF8.GetBytes(regUserDTO.Email); 
@@ -40,7 +55,7 @@ namespace BlazorApp6.Server.Controllers
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            return Ok(true);
+            return Ok("");
         }
         private byte[] CreatePasswordHash(string password)
         {

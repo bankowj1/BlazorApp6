@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BlazorApp6.Shared.Models
 {
@@ -18,6 +21,8 @@ namespace BlazorApp6.Shared.Models
         public virtual DbSet<ItemsGroup> ItemsGroups { get; set; } = null!;
         public virtual DbSet<MaterialsItem> MaterialsItems { get; set; } = null!;
         public virtual DbSet<Matterial> Matterials { get; set; } = null!;
+        public virtual DbSet<Note> Notes { get; set; } = null!;
+        public virtual DbSet<NotesUser> NotesUsers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -170,6 +175,39 @@ namespace BlazorApp6.Shared.Models
                 entity.Property(e => e.TempOfWash)
                     .HasColumnName("tempOfWash")
                     .HasDefaultValueSql("((30))");
+            });
+
+            modelBuilder.Entity<Note>(entity =>
+            {
+                entity.HasKey(e => e.Idnotes)
+                    .HasName("PKIDNotes");
+
+                entity.ToTable("notes", "app");
+
+                entity.Property(e => e.Idnotes).HasColumnName("IDNotes");
+
+                entity.Property(e => e.Note1).HasColumnName("note");
+            });
+
+            modelBuilder.Entity<NotesUser>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("NotesUser", "app");
+
+                entity.Property(e => e.NotesId).HasColumnName("NotesID");
+
+                entity.Property(e => e.UserId).HasColumnName("UserID");
+
+                entity.HasOne(d => d.Notes)
+                    .WithMany()
+                    .HasForeignKey(d => d.NotesId)
+                    .HasConstraintName("FKNotesNU");
+
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FKUserNU");
             });
 
             modelBuilder.Entity<User>(entity =>

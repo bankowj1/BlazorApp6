@@ -63,7 +63,8 @@ namespace BlazorApp6.Client.Services.MatterialService
             var tmp = new List<Matterial>();
             foreach (var item in res)
             {
-                tmp.Add(item.Mat);
+                Matterial matterial = item.Mat;
+                tmp.Add(matterial);
             }
         }
 

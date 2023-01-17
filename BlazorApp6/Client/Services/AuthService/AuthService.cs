@@ -1,5 +1,7 @@
 ﻿using AngleSharp.Io;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 
@@ -30,13 +32,17 @@ namespace BlazorApp6.Client.Services.AuthService
         }
 
 
-        public async Task<bool> RegisterAsync(RegUserDTO rg)
+        public async Task<string> RegisterAsync(RegUserDTO rg)
         {
             var res = await _httpClient.PostAsJsonAsync("api/Auth/Register", rg);
             if (res == null)
-                throw new Exception("not registered");
-            _navigationManager.NavigateTo("/login");
-            return res.IsSuccessStatusCode;
+                return "not registered";
+            if (res.StatusCode == HttpStatusCode.BadRequest)
+            {
+                var resp = await res.Content.ReadAsStringAsync();
+                return resp;
+            }
+            return "";
 
         }
     }
