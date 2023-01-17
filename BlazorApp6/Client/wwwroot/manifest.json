@@ -17,5 +17,13 @@
       "type": "image/png",
       "sizes": "192x192"
     }
+  ],
+  "lang": "en",
+  "dir": "auto",
+  "scope": "https://blazorapp6server20230113105800.azurewebsites.net",
+  "orientation": "natural",
+  "categories": [
+    "lifestyle",
+    "utilities"
   ]
 }
