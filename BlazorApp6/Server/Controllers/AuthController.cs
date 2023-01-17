@@ -36,6 +36,10 @@ namespace BlazorApp6.Server.Controllers
             {
                 return BadRequest("username in use");
             }
+            if(regUserDTO.Pass.Length < 8)
+            {
+                return BadRequest("to easy password");
+            }
             foreach (string line in System.IO.File.ReadLines("CommonPasses.txt"))
             {
                 if(regUserDTO.Pass.Contains(line))
