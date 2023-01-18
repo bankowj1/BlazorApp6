@@ -1,6 +1,9 @@
-﻿namespace BlazorApp6.Shared.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace BlazorApp6.Shared.Models
 {
-    public partial class MaterialsItem
+    public partial class ItemsMatterial
     {
         public int IdmaterialsItem { get; set; }
         public int ItemId { get; set; }

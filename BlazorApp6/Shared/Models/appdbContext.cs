@@ -17,12 +17,11 @@ namespace BlazorApp6.Shared.Models
         }
 
         public virtual DbSet<Group> Groups { get; set; } = null!;
+        public virtual DbSet<GroupsItem> GroupsItems { get; set; } = null!;
         public virtual DbSet<Item> Items { get; set; } = null!;
-        public virtual DbSet<ItemsGroup> ItemsGroups { get; set; } = null!;
-        public virtual DbSet<MaterialsItem> MaterialsItems { get; set; } = null!;
+        public virtual DbSet<ItemsMatterial> ItemsMatterials { get; set; } = null!;
         public virtual DbSet<Matterial> Matterials { get; set; } = null!;
         public virtual DbSet<Note> Notes { get; set; } = null!;
-        public virtual DbSet<NotesUser> NotesUsers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -40,7 +39,7 @@ namespace BlazorApp6.Shared.Models
                 entity.HasKey(e => e.Idgroup)
                     .HasName("PKIDGroup");
 
-                entity.ToTable("groups", "app");
+                entity.ToTable("Groups", "app");
 
                 entity.Property(e => e.Idgroup).HasColumnName("IDGroup");
 
@@ -56,12 +55,40 @@ namespace BlazorApp6.Shared.Models
                     .HasConstraintName("FKUserGroup");
             });
 
+            modelBuilder.Entity<GroupsItem>(entity =>
+            {
+                entity.HasKey(e => e.IditemsGroup)
+                    .HasName("PKIDItemsGroup");
+
+                entity.ToTable("GroupsItems", "app");
+
+                entity.Property(e => e.IditemsGroup).HasColumnName("IDItemsGroup");
+
+                entity.Property(e => e.GroupId).HasColumnName("groupID");
+
+                entity.Property(e => e.ItemId).HasColumnName("itemID");
+
+                entity.Property(e => e.NumberIt)
+                    .HasColumnName("numberIt")
+                    .HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Group)
+                    .WithMany(p => p.GroupsItems)
+                    .HasForeignKey(d => d.GroupId)
+                    .HasConstraintName("FKGroupItem");
+
+                entity.HasOne(d => d.Item)
+                    .WithMany(p => p.GroupsItems)
+                    .HasForeignKey(d => d.ItemId)
+                    .HasConstraintName("FKItemGroup");
+            });
+
             modelBuilder.Entity<Item>(entity =>
             {
                 entity.HasKey(e => e.Iditem)
                     .HasName("PKIDItem");
 
-                entity.ToTable("items", "app");
+                entity.ToTable("Items", "app");
 
                 entity.Property(e => e.Iditem).HasColumnName("IDItem");
 
@@ -97,40 +124,12 @@ namespace BlazorApp6.Shared.Models
                 entity.Property(e => e.WidthIt).HasColumnName("widthIt");
             });
 
-            modelBuilder.Entity<ItemsGroup>(entity =>
-            {
-                entity.HasKey(e => e.IditemsGroup)
-                    .HasName("PKIDItemsGroup");
-
-                entity.ToTable("ItemsGroup", "app");
-
-                entity.Property(e => e.IditemsGroup).HasColumnName("IDItemsGroup");
-
-                entity.Property(e => e.GroupId).HasColumnName("groupID");
-
-                entity.Property(e => e.ItemId).HasColumnName("itemID");
-
-                entity.Property(e => e.NumberIt)
-                    .HasColumnName("numberIt")
-                    .HasDefaultValueSql("((1))");
-
-                entity.HasOne(d => d.Group)
-                    .WithMany(p => p.ItemsGroups)
-                    .HasForeignKey(d => d.GroupId)
-                    .HasConstraintName("FKGroupItem");
-
-                entity.HasOne(d => d.Item)
-                    .WithMany(p => p.ItemsGroups)
-                    .HasForeignKey(d => d.ItemId)
-                    .HasConstraintName("FKItemGroup");
-            });
-
-            modelBuilder.Entity<MaterialsItem>(entity =>
+            modelBuilder.Entity<ItemsMatterial>(entity =>
             {
                 entity.HasKey(e => e.IdmaterialsItem)
                     .HasName("PKIDMaterialsItem");
 
-                entity.ToTable("MaterialsItem", "app");
+                entity.ToTable("ItemsMatterials", "app");
 
                 entity.Property(e => e.IdmaterialsItem).HasColumnName("IDMaterialsItem");
 
@@ -143,13 +142,13 @@ namespace BlazorApp6.Shared.Models
                 entity.Property(e => e.MatId).HasColumnName("matID");
 
                 entity.HasOne(d => d.Item)
-                    .WithMany(p => p.MaterialsItems)
+                    .WithMany(p => p.ItemsMatterials)
                     .HasForeignKey(d => d.ItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKItemMat");
 
                 entity.HasOne(d => d.Mat)
-                    .WithMany(p => p.MaterialsItems)
+                    .WithMany(p => p.ItemsMatterials)
                     .HasForeignKey(d => d.MatId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKMatItem");
@@ -160,7 +159,7 @@ namespace BlazorApp6.Shared.Models
                 entity.HasKey(e => e.Idmat)
                     .HasName("PKIDMat");
 
-                entity.ToTable("matterial", "app");
+                entity.ToTable("Matterial", "app");
 
                 entity.Property(e => e.Idmat).HasColumnName("IDMat");
 
@@ -182,40 +181,34 @@ namespace BlazorApp6.Shared.Models
                 entity.HasKey(e => e.Idnotes)
                     .HasName("PKIDNotes");
 
-                entity.ToTable("notes", "app");
+                entity.ToTable("Notes", "app");
 
                 entity.Property(e => e.Idnotes).HasColumnName("IDNotes");
 
                 entity.Property(e => e.Note1).HasColumnName("note");
-            });
 
-            modelBuilder.Entity<NotesUser>(entity =>
-            {
-                entity.HasNoKey();
+                entity.HasMany(d => d.Users)
+                    .WithMany(p => p.Notes)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "UsersNote",
+                        l => l.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FKUserNU"),
+                        r => r.HasOne<Note>().WithMany().HasForeignKey("NotesId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FKNotesNU"),
+                        j =>
+                        {
+                            j.HasKey("NotesId", "UserId").HasName("PKUserNotes");
 
-                entity.ToTable("NotesUser", "app");
+                            j.ToTable("UsersNotes", "app");
 
-                entity.Property(e => e.NotesId).HasColumnName("NotesID");
+                            j.IndexerProperty<int>("NotesId").HasColumnName("NotesID");
 
-                entity.Property(e => e.UserId).HasColumnName("UserID");
-
-                entity.HasOne(d => d.Notes)
-                    .WithMany()
-                    .HasForeignKey(d => d.NotesId)
-                    .HasConstraintName("FKNotesNU");
-
-                entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FKUserNU");
+                            j.IndexerProperty<int>("UserId").HasColumnName("UserID");
+                        });
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Iduser)
                     .HasName("PKIDUser");
-
-                entity.ToTable("users");
 
                 entity.Property(e => e.Iduser).HasColumnName("IDUser");
 

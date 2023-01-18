@@ -57,7 +57,7 @@ namespace BlazorApp6.Client.Services.MatterialService
         public async Task GetMetterialsOfItemAsync(int id)
         {
             await GetMetterialsAsync();
-            var res = await _httpClient.GetFromJsonAsync<List<MaterialsItem>>($"api/MaterialsItems/Item/{id}");
+            var res = await _httpClient.GetFromJsonAsync<List<ItemsMatterial>>($"api/MaterialsItems/Item/{id}");
             if (res == null)
                 throw new Exception("not found");
             var tmp = new List<Matterial>();

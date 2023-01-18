@@ -19,16 +19,16 @@ namespace BlazorApp6.Server.Controllers
 
         // GET: api/MaterialsItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MaterialsItem>>> GetMaterialsItems()
+        public async Task<ActionResult<IEnumerable<ItemsMatterial>>> GetMaterialsItems()
         {
-            return await _context.MaterialsItems.ToListAsync();
+            return await _context.ItemsMatterials.ToListAsync();
         }
 
         // GET: api/MaterialsItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MaterialsItem>> GetMaterialsItem(int id)
+        public async Task<ActionResult<ItemsMatterial>> GetMaterialsItem(int id)
         {
-            var materialsItem = await _context.MaterialsItems.FindAsync(id);
+            var materialsItem = await _context.ItemsMatterials.FindAsync(id);
 
             if (materialsItem == null)
             {
@@ -38,9 +38,9 @@ namespace BlazorApp6.Server.Controllers
             return materialsItem;
         }
         [HttpGet("Details/{id}")]
-        public async Task<ActionResult<MaterialsItem>> GetMaterialsItemDetails(int id)
+        public async Task<ActionResult<ItemsMatterial>> GetMaterialsItemDetails(int id)
         {
-            var materialsItem = await _context.MaterialsItems.FindAsync(id);
+            var materialsItem = await _context.ItemsMatterials.FindAsync(id);
 
             if (materialsItem == null)
             {
@@ -55,9 +55,9 @@ namespace BlazorApp6.Server.Controllers
             return materialsItem;
         }
         [HttpGet("Item/{id}")]
-        public async Task<ActionResult<List<MaterialsItem>>> GetItemsGroupOfItem(int id)
+        public async Task<ActionResult<List<ItemsMatterial>>> GetItemsGroupOfItem(int id)
         {
-            var materialsItem = await _context.MaterialsItems.Where(mi => mi.ItemId == id).Include(ig => ig.Mat).ToListAsync();
+            var materialsItem = await _context.ItemsMatterials.Where(mi => mi.ItemId == id).Include(ig => ig.Mat).ToListAsync();
 
             if (materialsItem == null)
             {
@@ -67,9 +67,9 @@ namespace BlazorApp6.Server.Controllers
         }
 
         [HttpGet("Mat/{id}")]
-        public async Task<ActionResult<List<MaterialsItem>>> GetItemsGroupOfMat(int id)
+        public async Task<ActionResult<List<ItemsMatterial>>> GetItemsGroupOfMat(int id)
         {
-            var materialsItem = await _context.MaterialsItems.Where(mi => mi.MatId == id).Include(ig => ig.Item).Include(ig => ig.Mat).ToListAsync();
+            var materialsItem = await _context.ItemsMatterials.Where(mi => mi.MatId == id).Include(ig => ig.Item).Include(ig => ig.Mat).ToListAsync();
 
             if (materialsItem == null)
             {
@@ -82,7 +82,7 @@ namespace BlazorApp6.Server.Controllers
         // PUT: api/MaterialsItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMaterialsItem(int id, MaterialsItem materialsItem)
+        public async Task<IActionResult> PutMaterialsItem(int id, ItemsMatterial materialsItem)
         {
             if (id != materialsItem.IdmaterialsItem)
             {
@@ -113,9 +113,9 @@ namespace BlazorApp6.Server.Controllers
         // POST: api/MaterialsItems
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MaterialsItem>> PostMaterialsItem(MaterialsItem materialsItem)
+        public async Task<ActionResult<ItemsMatterial>> PostMaterialsItem(ItemsMatterial materialsItem)
         {
-            _context.MaterialsItems.Add(materialsItem);
+            _context.ItemsMatterials.Add(materialsItem);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMaterialsItem", new { id = materialsItem.IdmaterialsItem }, materialsItem);
@@ -125,13 +125,13 @@ namespace BlazorApp6.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMaterialsItem(int id)
         {
-            var materialsItem = await _context.MaterialsItems.FindAsync(id);
+            var materialsItem = await _context.ItemsMatterials.FindAsync(id);
             if (materialsItem == null)
             {
                 return NotFound();
             }
 
-            _context.MaterialsItems.Remove(materialsItem);
+            _context.ItemsMatterials.Remove(materialsItem);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -139,7 +139,7 @@ namespace BlazorApp6.Server.Controllers
 
         private bool MaterialsItemExists(int id)
         {
-            return _context.MaterialsItems.Any(e => e.IdmaterialsItem == id);
+            return _context.ItemsMatterials.Any(e => e.IdmaterialsItem == id);
         }
     }
 }

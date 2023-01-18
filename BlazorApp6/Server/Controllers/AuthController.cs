@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using BlazorApp6.Shared.Models;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
+using BlazorApp6.Server.Services.UserService;
 
 namespace BlazorApp6.Server.Controllers
 {
@@ -21,17 +22,19 @@ namespace BlazorApp6.Server.Controllers
     {
         private readonly appdbContext _context;
         private readonly AuthSettings _appIdentitySettings;
+        private readonly IUserService _userService;
         public static User user = new ();
 
-        public AuthController(appdbContext context, IOptions<AuthSettings> appAuthSettingsAccessor)
+        public AuthController(appdbContext context, IOptions<AuthSettings> appAuthSettingsAccessor, IUserService userService)
         {
             _context = context;
             _appIdentitySettings = appAuthSettingsAccessor.Value;
+            _userService = userService;
         }
-        [HttpGet("id"), Authorize(Roles = "user")]
-        public ActionResult<string> GetMe()
+        [HttpGet("id"), Authorize]
+        public ActionResult<int> GetMe()
         {
-            var userName = User?.Identity?.Name;
+            var userName = _userService.GetMyId();
             return Ok(userName);
         }
         [HttpGet("role"), Authorize(Roles ="admin")]

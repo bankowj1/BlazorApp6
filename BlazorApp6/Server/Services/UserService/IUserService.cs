@@ -2,7 +2,7 @@
 {
     public interface IUserService
     {
-        Task<string> GetMyUserName(string login);
+        int GetMyId();
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BlazorApp6.Shared.Models
 {
@@ -6,7 +7,7 @@ namespace BlazorApp6.Shared.Models
     {
         public Matterial()
         {
-            MaterialsItems = new HashSet<MaterialsItem>();
+            ItemsMatterials = new HashSet<ItemsMatterial>();
         }
 
         public int Idmat { get; set; }
@@ -14,7 +15,6 @@ namespace BlazorApp6.Shared.Models
         public string? Descriptions { get; set; }
         public int? TempOfWash { get; set; }
 
-        [JsonIgnore]
-        public virtual ICollection<MaterialsItem> MaterialsItems { get; set; }
+        public virtual ICollection<ItemsMatterial> ItemsMatterials { get; set; }
     }
 }

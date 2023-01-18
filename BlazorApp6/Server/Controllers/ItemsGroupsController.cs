@@ -18,16 +18,16 @@ namespace BlazorApp6.Server.Controllers
 
         // GET: api/ItemsGroups
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemsGroup>>> GetItemsGroups()
+        public async Task<ActionResult<IEnumerable<GroupsItem>>> GetItemsGroups()
         {
-            return await _context.ItemsGroups.ToListAsync();
+            return await _context.GroupsItems.ToListAsync();
         }
 
         // GET: api/ItemsGroups/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ItemsGroup>> GetItemsGroup(int id)
+        public async Task<ActionResult<GroupsItem>> GetItemsGroup(int id)
         {
-            var itemsGroup = await _context.ItemsGroups.FindAsync(id);
+            var itemsGroup = await _context.GroupsItems.FindAsync(id);
 
             if (itemsGroup == null)
             {
@@ -38,9 +38,9 @@ namespace BlazorApp6.Server.Controllers
         }
         // GET: api/ItemsGroups/5
         [HttpGet("Details/{id}")]
-        public async Task<ActionResult<ItemsGroup>> GetItemsGroupDetails(int id)
+        public async Task<ActionResult<GroupsItem>> GetItemsGroupDetails(int id)
         {
-            var itemsGroup = await _context.ItemsGroups.FindAsync(id);
+            var itemsGroup = await _context.GroupsItems.FindAsync(id);
 
             if (itemsGroup == null)
             {
@@ -56,9 +56,9 @@ namespace BlazorApp6.Server.Controllers
             return itemsGroup;
         }
         [HttpGet("Group/{id}")]
-        public async Task<ActionResult<IEnumerable<ItemsGroup>>> GetItemsGroupOfGroup(int id)
+        public async Task<ActionResult<IEnumerable<GroupsItem>>> GetItemsGroupOfGroup(int id)
         {
-            var itemsGroup = await _context.ItemsGroups.Where(ig => ig.GroupId == id).Include(ig => ig.Item).Include(ig => ig.Group).ToListAsync();
+            var itemsGroup = await _context.GroupsItems.Where(ig => ig.GroupId == id).Include(ig => ig.Item).Include(ig => ig.Group).ToListAsync();
 
             if (itemsGroup == null)
             {
@@ -69,9 +69,9 @@ namespace BlazorApp6.Server.Controllers
         }
 
         [HttpGet("Item/{id}")]
-        public async Task<ActionResult<IEnumerable<ItemsGroup>>> GetItemsGroupOfItem(int id)
+        public async Task<ActionResult<IEnumerable<GroupsItem>>> GetItemsGroupOfItem(int id)
         {
-            var itemsGroup = await _context.ItemsGroups.Where(ig => ig.ItemId == id).Include(ig => ig.Item).Include(ig => ig.Group).ToListAsync();
+            var itemsGroup = await _context.GroupsItems.Where(ig => ig.ItemId == id).Include(ig => ig.Item).Include(ig => ig.Group).ToListAsync();
 
             if (itemsGroup == null)
             {
@@ -84,7 +84,7 @@ namespace BlazorApp6.Server.Controllers
         // PUT: api/ItemsGroups/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItemsGroup(int id, ItemsGroup itemsGroup)
+        public async Task<IActionResult> PutItemsGroup(int id, GroupsItem itemsGroup)
         {
             if (id != itemsGroup.IditemsGroup)
             {
@@ -115,9 +115,9 @@ namespace BlazorApp6.Server.Controllers
         // POST: api/ItemsGroups
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ItemsGroup>> PostItemsGroup(ItemsGroup itemsGroup)
+        public async Task<ActionResult<GroupsItem>> PostItemsGroup(GroupsItem itemsGroup)
         {
-            _context.ItemsGroups.Add(itemsGroup);
+            _context.GroupsItems.Add(itemsGroup);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetItemsGroup", new { id = itemsGroup.IditemsGroup }, itemsGroup);
@@ -127,13 +127,13 @@ namespace BlazorApp6.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItemsGroup(int id)
         {
-            var itemsGroup = await _context.ItemsGroups.FindAsync(id);
+            var itemsGroup = await _context.GroupsItems.FindAsync(id);
             if (itemsGroup == null)
             {
                 return NotFound();
             }
 
-            _context.ItemsGroups.Remove(itemsGroup);
+            _context.GroupsItems.Remove(itemsGroup);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -141,7 +141,7 @@ namespace BlazorApp6.Server.Controllers
 
         private bool ItemsGroupExists(int id)
         {
-            return _context.ItemsGroups.Any(e => e.IditemsGroup == id);
+            return _context.GroupsItems.Any(e => e.IditemsGroup == id);
         }
     }
 }

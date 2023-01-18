@@ -1,10 +1,14 @@
-﻿namespace BlazorApp6.Shared.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace BlazorApp6.Shared.Models
 {
     public partial class User
     {
         public User()
         {
             Groups = new HashSet<Group>();
+            Notes = new HashSet<Note>();
         }
 
         public int Iduser { get; set; }
@@ -14,5 +18,7 @@
         public byte[] Email { get; set; } = null!;
 
         public virtual ICollection<Group> Groups { get; set; }
+
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }
