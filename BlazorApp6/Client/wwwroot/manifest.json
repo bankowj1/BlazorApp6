@@ -20,7 +20,7 @@
   ],
   "lang": "en",
   "name": "BlazorApp6",
-  //"scope": "https://blazorapp6server20230113105800.azurewebsites.net",
+  //"scope": "https://localhost:7258/",
   "orientation": "natural",
   "prefer_related_applications": false,
   "short_name": "BlazorApp6",

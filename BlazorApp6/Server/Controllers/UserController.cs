@@ -1,4 +1,5 @@
-﻿using BlazorApp6.Server.Services.UserService;
+﻿using BlazorApp6.Server.Models;
+using BlazorApp6.Server.Services.UserService;
 using BlazorApp6.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
