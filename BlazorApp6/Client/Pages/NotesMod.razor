@@ -85,11 +85,6 @@ else
         if (Id != null)
         {
             note = NoteService.GetNote((int)Id);
-            if(note.IsCoded)
-            {
-                text = "coded";
-            }
-            else
             {
                 text = Encoding.UTF8.GetString(note.Note1);
                 if (text.Length != 0)
@@ -124,12 +119,14 @@ else
         NoteDTO noteDTO = new NoteDTO { Note1 = text, IsCoded = coded };
         if (coded)
         {
-            noteDTO = NoteService.DecodeNote(noteDTO,pass);
+            text = await NoteService.DecodeNote(noteDTO,pass);
         }
         else
         {
-            noteDTO = NoteService.EncodeNote(noteDTO, pass);
+            text = await NoteService.EncodeNote(noteDTO, pass);
         }
+        await this.q.LoadHTMLContent(text);
+        StateHasChanged();
         coded = !coded;
         pass = string.Empty;
     }

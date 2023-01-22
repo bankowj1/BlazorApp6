@@ -3,6 +3,7 @@ using BlazorApp6.Shared.Models;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BlazorApp6.Server.Controllers
@@ -81,7 +82,87 @@ namespace BlazorApp6.Server.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        [HttpPost("encode")]
+        public async Task<string> PostEncodeNotes(NoteDTOEnco note)
+        {
+            if (note.Note1 != null && note.pass != null)
+            {
+                byte[] passwordArray = Encoding.UTF8.GetBytes(note.pass);
+                byte[] encoded;
+                // Use the password to generate the key and initialization vector
+                byte[] key, iv;
+                using (var deriveBytes = new Rfc2898DeriveBytes(note.pass, passwordArray))
+                {
+                    key = deriveBytes.GetBytes(32);
+                    iv = deriveBytes.GetBytes(16);
+                }
+                using (Aes myAes = Aes.Create())
+                {
+                    myAes.Key = key;
+                    myAes.IV = iv;
+                    ICryptoTransform encryptor = myAes.CreateEncryptor(myAes.Key, myAes.IV);
 
+                    // Create the streams used for encryption.
+                    using (MemoryStream msEncrypt = new MemoryStream())
+                    {
+                        using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                        {
+                            using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                            {
+                                //Write all data to the stream.
+                                swEncrypt.Write(note.Note1);
+                            }
+                            encoded = msEncrypt.ToArray();
+                        }
+                    }
+                }
+                return Encoding.UTF8.GetString(encoded);
+
+            }
+            throw new Exception("bad password or empty note");
+
+        }
+        [HttpPost("decode")]
+        public async Task<string> PostDecodeNotes(NoteDTOEnco note)
+        {
+            if (note.Note1 != null && note.pass != null)
+            {
+                byte[] passwordArray = Encoding.UTF8.GetBytes(note.pass);
+                byte[] encoded = Encoding.UTF8.GetBytes(note.Note1);
+                string decoded = string.Empty;
+                // Use the password to generate the key and initialization vector
+                byte[] key, iv;
+                using (var deriveBytes = new Rfc2898DeriveBytes(note.pass, passwordArray))
+                {
+                    key = deriveBytes.GetBytes(32);
+                    iv = deriveBytes.GetBytes(16);
+                }
+                using (Aes myAes = Aes.Create())
+                {
+                    myAes.Key = key;
+                    myAes.IV = iv;
+                    ICryptoTransform decryptor = myAes.CreateDecryptor(myAes.Key, myAes.IV);
+
+                    // Create the streams used for encryption.
+                    using (MemoryStream msDecrypt = new MemoryStream(encoded))
+                    {
+                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                        {
+                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                            {
+
+                                // Read the decrypted bytes from the decrypting stream
+                                // and place them in a string.
+                                decoded = srDecrypt.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+                return decoded;
+            }
+            throw new Exception("bad password or empty note");
+
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> PutNote(int id, NoteDTO noteDTO)
         {

@@ -61,14 +61,29 @@ namespace BlazorApp6.Client.Services.NoteService
             _navigationManager.NavigateTo("notesList");
         }
 
-        public NoteDTO EncodeNote(NoteDTO note, string pass)
+        public async Task <string> EncodeNote(NoteDTO note, string pass)
         {
-            throw new NotImplementedException();
+            NoteDTOEnco noteDTOEnco = new NoteDTOEnco() { Note1 = note.Note1, pass = pass };
+            var res = await _httpClient.PostAsJsonAsync("api/Notes/encode", noteDTOEnco);
+            if(res != null)
+            {
+                var resp = await res.Content.ReadAsStringAsync();
+                return resp;
+            }
+            return "";
         }
 
-        public NoteDTO DecodeNote(NoteDTO note, string pass)
+
+        public async Task<string> DecodeNote(NoteDTO note, string pass)
         {
-            throw new NotImplementedException();
+            NoteDTOEnco noteDTOEnco = new NoteDTOEnco() { Note1 = note.Note1, pass = pass };
+            var res = await _httpClient.PostAsJsonAsync("api/Notes/decode", noteDTOEnco);
+            if (res != null)
+            {
+                var resp = await res.Content.ReadAsStringAsync();
+                return resp;
+            }
+            return "";
         }
     }
 }

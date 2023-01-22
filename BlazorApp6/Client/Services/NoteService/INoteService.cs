@@ -14,7 +14,7 @@
 
         Task GetNotesAsync();
 
-        NoteDTO EncodeNote(NoteDTO note, string pass);
-        NoteDTO DecodeNote(NoteDTO note, string pass);
+        Task<string> EncodeNote(NoteDTO note, string pass);
+        Task<string> DecodeNote(NoteDTO note, string pass);
     }
 }
