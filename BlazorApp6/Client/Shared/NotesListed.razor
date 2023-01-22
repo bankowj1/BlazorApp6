@@ -31,7 +31,7 @@
                             }
                         </td>
                         <td>
-                            <button class="button" @onclick="(() => Modif(note.Idnotes,note.IsCoded))">
+                            <button class="button" @onclick="(() => Modif(note.Idnotes))">
                                 <h3>modify</h3>
                             </button>
                         </td>
@@ -63,10 +63,9 @@
     {
         await NoteService.GetNotesAsync();
     }
-    void Modif(int Id,bool Cod)
+    void Modif(int Id)
     {
-        int b = Cod ? 1 : 0;
-        NavMeg.NavigateTo($"noteMod/{Id}/{b}");
+        NavMeg.NavigateTo($"noteMod/{Id}");
     }
     void Del(int Id)
     {

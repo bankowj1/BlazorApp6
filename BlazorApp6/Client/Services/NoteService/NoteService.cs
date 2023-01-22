@@ -44,14 +44,12 @@ namespace BlazorApp6.Client.Services.NoteService
             notes = res;
         }
 
-        public NoteDTO GetNote(int id)
+        public Note GetNote(int id)
         {
-            NoteDTO noteDTO = new NoteDTO();
             var not = notes.FirstOrDefault(e => e.Idnotes == id);
             if(not == null)
                 throw new Exception("error");
-            noteDTO.Note1 = Encoding.UTF8.GetString(not.Note1);
-            return noteDTO;
+            return not;
         }
 
         public async Task UpdateNoteAsync(NoteDTO note, int id)

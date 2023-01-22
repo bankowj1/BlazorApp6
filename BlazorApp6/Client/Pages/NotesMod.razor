@@ -1,5 +1,5 @@
 ﻿@page "/noteMod"
-@page "/moteMod/{id:int}/{cod:int}"
+@page "/noteMod/{id:int}"
 @using BlazorApp6.Client.Services.NoteService
 @inject INoteService NoteService
 
@@ -12,8 +12,8 @@ else
     <h1>Modify Note</h1>
 
 }
-<EditForm Model=noteDTO OnSubmit="NoteSubmit">
-    <InputTextArea @bind-Value=noteDTO.Note1 style="width: 400px; height:auto;font-size:20px;" />
+<EditForm Model=text OnSubmit="NoteSubmit">
+    <InputTextArea @bind-Value=text style="width: 400px; height:auto;font-size:20px;" />
     <button type="submit" class="button"> @btnText </button>
     <button @onclick="DelNote"> Save notes</button>
 </EditForm>
@@ -29,9 +29,11 @@ else
     public int? Cod { get; set; }
     private bool coded;
     private string pass = string.Empty;
-    NoteDTO noteDTO= new();
+    Note note= new();
     private string btnText = string.Empty;
     private string btnText2 = string.Empty;
+    private string text = string.Empty;
+
     protected override void OnInitialized()
     {
         btnText = Id == null ? "Save New" : "Update";
@@ -42,20 +44,18 @@ else
     {
         if (Id != null)
         {
-            noteDTO = NoteService.GetNote((int)Id);
-            noteDTO.Note1 = _sanitizer.Sanitize(noteDTO.Note1);
+            note = NoteService.GetNote((int)Id);
         }
     }
     async Task NoteSubmit()
     {
-        noteDTO.Note1 = _sanitizer.Sanitize(noteDTO.Note1);
         if (Id == null)
         {
-            await NoteService.CreateNoteAsync(noteDTO);
+            //await NoteService.CreateNoteAsync(noteDTO);
         }
         else
         {
-            await NoteService.UpdateNoteAsync(noteDTO,(int)Id);
+            //await NoteService.UpdateNoteAsync(noteDTO,(int)Id);
         }
     }
     async Task DelNote()

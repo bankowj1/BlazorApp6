@@ -4,7 +4,7 @@
     {
         List<Note> notes { get; set; }
 
-        NoteDTO GetNote(int id);
+        Note GetNote(int id);
 
         Task CreateNoteAsync(NoteDTO noteDTO);
 
