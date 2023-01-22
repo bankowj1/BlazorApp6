@@ -1,6 +1,7 @@
 ﻿@page "/noteMod"
 @page "/noteMod/{id:int}"
 @using BlazorApp6.Client.Services.NoteService
+@using System.Text
 @inject INoteService NoteService
 
 @if (Id == null)
@@ -12,17 +13,54 @@ else
     <h1>Modify Note</h1>
 
 }
-<EditForm Model=text OnSubmit="NoteSubmit">
-    <InputTextArea @bind-Value=text style="width: 400px; height:auto;font-size:20px;" />
-    <button type="submit" class="button"> @btnText </button>
-    <button @onclick="DelNote"> Save notes</button>
-</EditForm>
+<div>
+    <BlazoredTextEditor @ref="@q">
+        <ToolbarContent>
+            <select class="ql-header">
+                <option selected=""></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+            </select>
+            <span class="ql-formats">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+            </span>
+            <span class="ql-formats">
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+            </span>
+            <span class="ql-formats">
+                <button class="ql-link"></button>
+            </span>
+        </ToolbarContent>
+        <EditorContent>
+            @markupString
+        </EditorContent>
+    </BlazoredTextEditor>
+</div>
+<div>
+    <button @onclick="NoteSubmit" class="button"> @btnText </button>
+    <button @onclick="DelNote"> Delete Note</button>
+</div>
+<br />
+
 <EditForm Model=pass OnSubmit="CodeNote">
     <InputText @bind-Value=pass/>
     <button type="submit" class="button"> @btnText2 </button>
 </EditForm>
 @code {
     private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+    private BlazoredTextEditor q = new();
+
     [Parameter]
     public int? Id { get; set; }
     [Parameter]
@@ -32,30 +70,48 @@ else
     Note note= new();
     private string btnText = string.Empty;
     private string btnText2 = string.Empty;
+
+    private MarkupString markupString;
     private string text = string.Empty;
 
     protected override void OnInitialized()
     {
         btnText = Id == null ? "Save New" : "Update";
         coded = Cod == null ? false : Convert.ToBoolean(Cod);
-        btnText = coded == true ? "Decode" : "Encode";
+        btnText2 = coded == true ? "Decode" : "Encode";
     }
     protected override async Task OnParametersSetAsync()
     {
         if (Id != null)
         {
             note = NoteService.GetNote((int)Id);
+            if(note.IsCoded)
+            {
+                text = "coded";
+            }
+            else
+            {
+                text = Encoding.UTF8.GetString(note.Note1);
+                if (text.Length != 0)
+                    markupString = new MarkupString(_sanitizer.Sanitize(text));
+                else
+                    markupString = new MarkupString("");   
+            }
         }
     }
     async Task NoteSubmit()
     {
+        text = _sanitizer.Sanitize(await this.q.GetHTML());
+        
+        NoteDTO noteDTO = new NoteDTO { Note1 = text, IsCoded = coded };
+        StateHasChanged();
         if (Id == null)
         {
-            //await NoteService.CreateNoteAsync(noteDTO);
+            await NoteService.CreateNoteAsync(noteDTO);
         }
         else
         {
-            //await NoteService.UpdateNoteAsync(noteDTO,(int)Id);
+            await NoteService.UpdateNoteAsync(noteDTO,(int)Id);
         }
     }
     async Task DelNote()
@@ -64,13 +120,15 @@ else
     }
     async Task CodeNote()
     {
-        if (coded == true)
+        text = _sanitizer.Sanitize(await this.q.GetHTML());
+        NoteDTO noteDTO = new NoteDTO { Note1 = text, IsCoded = coded };
+        if (coded)
         {
-            //noteDTO = await NoteService.DecodeNote(noteDTO,pass);
+            noteDTO = NoteService.DecodeNote(noteDTO,pass);
         }
         else
         {
-            //noteDTO = await NoteService.EncodeNote(noteDTO, pass);
+            noteDTO = NoteService.EncodeNote(noteDTO, pass);
         }
         coded = !coded;
         pass = string.Empty;

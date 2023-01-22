@@ -1,4 +1,5 @@
 ﻿using BlazorApp6.Server.Services.UserService;
+using BlazorApp6.Shared.Models;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -75,6 +76,7 @@ namespace BlazorApp6.Server.Controllers
             if (us != null)
                 l.Add(us);
             note1.Users = l;
+            note1.IsCoded = (bool)note.IsCoded;
             _context.Notes.Add(note1);
             await _context.SaveChangesAsync();
             return NoContent();
@@ -92,6 +94,7 @@ namespace BlazorApp6.Server.Controllers
             if (Amihere(note))
             {
                 note.Note1 = note1.Note1;
+                note.IsCoded = (bool)noteDTO.IsCoded;
                 _context.Entry(note).State = EntityState.Modified;
                 try
                 {

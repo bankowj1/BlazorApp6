@@ -1,6 +1,7 @@
 ﻿using BlazorApp6.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BlazorApp6.Client.Services.NoteService
@@ -57,7 +58,7 @@ namespace BlazorApp6.Client.Services.NoteService
             var res = await _httpClient.PutAsJsonAsync($"api/Notes/{id}", note);
             if (res == null)
                 throw new Exception("not posted");
-            _navigationManager.NavigateTo("matterialList");
+            _navigationManager.NavigateTo("notesList");
         }
 
         public NoteDTO EncodeNote(NoteDTO note, string pass)

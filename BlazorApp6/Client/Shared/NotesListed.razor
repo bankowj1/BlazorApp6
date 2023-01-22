@@ -17,7 +17,6 @@
                     <th>Note</th>
                     <th></th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -28,6 +27,8 @@
                             @if (!note.IsCoded)
                             {
                                 @(Encoding.UTF8.GetString(note.Note1).Length > 20 ? Encoding.UTF8.GetString(note.Note1).Substring(0, 20) : Encoding.UTF8.GetString(note.Note1))
+                            }else{
+                                <h1> coded </h1>
                             }
                         </td>
                         <td>
@@ -39,14 +40,6 @@
                             <button class="button" @onclick="(() => Del(note.Idnotes))">
                                 <h3>del</h3>
                             </button>
-                        </td>
-                        <td>
-                            @if (note.IsCoded)
-                            {
-                                <button class="button" @onclick="(() => Decode(note.Idnotes))">
-                                    <h3>Decode</h3>
-                                </button>
-                            }
                         </td>
                     </tr>
                 }
@@ -70,13 +63,10 @@
     void Del(int Id)
     {
         NoteService.DeleteNoteAsync(Id);
+        StateHasChanged();
     }
     void AddIt()
     {
         NavMeg.NavigateTo($"noteMod");
-    }
-    void Decode(int Id)
-    {
-        /**/
     }
 }

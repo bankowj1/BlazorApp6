@@ -9,5 +9,6 @@ namespace BlazorApp6.Shared.Models
     public class NoteDTO
     {
         public string Note1 { get; set; } = null!;
+        public bool IsCoded { get; set; }
     }
 }
