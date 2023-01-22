@@ -13,6 +13,7 @@ namespace BlazorApp6.Shared.Models
 
         public int Idnotes { get; set; }
         public byte[] Note1 { get; set; } = null!;
+        public bool IsCoded { get; set; }
         [JsonIgnore]
         public virtual ICollection<User> Users { get; set; }
     }

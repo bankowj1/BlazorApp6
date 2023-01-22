@@ -185,6 +185,8 @@ namespace BlazorApp6.Shared.Models
 
                 entity.Property(e => e.Idnotes).HasColumnName("IDNotes");
 
+                entity.Property(e => e.IsCoded).HasColumnName("isCoded");
+
                 entity.Property(e => e.Note1).HasColumnName("note");
 
                 entity.HasMany(d => d.Users)

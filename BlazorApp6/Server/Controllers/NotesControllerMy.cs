@@ -1,13 +1,7 @@
-﻿using AngleSharp.Dom;
-using AngleSharp.Html;
-using BlazorApp6.Server.Services.UserService;
-using BlazorApp6.Shared.Models;
+﻿using BlazorApp6.Server.Services.UserService;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using System.Diagnostics;
 using System.Text;
 
 namespace BlazorApp6.Server.Controllers
@@ -19,13 +13,15 @@ namespace BlazorApp6.Server.Controllers
         private readonly appdbContext _context;
         private readonly IUserService _userService;
         public static User user = new();
-        HtmlSanitizer _sanitizer = new HtmlSanitizer();
+        private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+
         public NotesControllerMy(appdbContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;
         }
-        [HttpGet, Authorize(Roles ="admin")]
+
+        [HttpGet, Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
         {
             var note = await _context.Notes
@@ -38,6 +34,7 @@ namespace BlazorApp6.Server.Controllers
 
             return note;
         }
+
         [HttpGet("{id}"), Authorize(Roles = "admin")]
         public async Task<ActionResult<Note>> GetNote(int id)
         {
@@ -52,11 +49,12 @@ namespace BlazorApp6.Server.Controllers
                 .LoadAsync();
             return note;
         }
+
         // GET: api/Notes/my
         [HttpGet("My")]
         public async Task<ActionResult<IEnumerable<Note>>> GetMyNotes()
         {
-            var note = await _context.Notes.Where(n=> n.Users.Any(y=>y.Iduser == _userService.GetMyId())).ToListAsync();
+            var note = await _context.Notes.Where(n => n.Users.Any(y => y.Iduser == _userService.GetMyId())).ToListAsync();
 
             if (note == null)
             {
@@ -65,21 +63,38 @@ namespace BlazorApp6.Server.Controllers
 
             return note;
         }
+
         [HttpPost]
         public async Task<ActionResult<Note>> PostNotes(NoteDTO note)
         {
-           //testowane dziala
+            //testowane dziala
             Note note1 = new();
             note1.Note1 = Encoding.UTF8.GetBytes(_sanitizer.Sanitize(note.Note1));
             var l = new List<User>();
             var us = await _context.Users.FindAsync(_userService.GetMyId());
-            if(us != null)
-            l.Add(us);
+            if (us != null)
+                l.Add(us);
             note1.Users = l;
             _context.Notes.Add(note1);
             await _context.SaveChangesAsync();
             return NoContent();
         }
+        [HttpPost]
+        public async Task<ActionResult<Note>> PostNotesCoded(NoteDTOCoded note)
+        {
+            //testowane dziala
+            Note note1 = new();
+            note1.Note1 = note.Note1;
+            var l = new List<User>();
+            var us = await _context.Users.FindAsync(_userService.GetMyId());
+            if (us != null)
+                l.Add(us);
+            note1.Users = l;
+            _context.Notes.Add(note1);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutNote(int id, NoteDTO noteDTO)
         {
@@ -88,8 +103,7 @@ namespace BlazorApp6.Server.Controllers
             var note = await _context.Notes.Include(n => n.Users).SingleOrDefaultAsync(n => n.Idnotes == id);
             if (note == null)
                 return NotFound();
-            
-            
+
             if (Amihere(note))
             {
                 note.Note1 = note1.Note1;
@@ -116,9 +130,8 @@ namespace BlazorApp6.Server.Controllers
             {
                 return BadRequest();
             }
-
-            
         }
+
         [HttpPut("adduser/{id,string}")]
         public async Task<IActionResult> PostAddUserNote(int id, string username)
         {
@@ -130,7 +143,7 @@ namespace BlazorApp6.Server.Controllers
                 return BadRequest();
             if (Amihere(note))
             {
-                var user = await _context.Users.Where(us=> us.Username == username).SingleOrDefaultAsync();
+                var user = await _context.Users.Where(us => us.Username == username).SingleOrDefaultAsync();
                 if (user != null)
                 {
                     ICollection<User> users = note.Users;
@@ -159,7 +172,6 @@ namespace BlazorApp6.Server.Controllers
             {
                 return BadRequest();
             }
-            
         }
 
         // DELETE: api/Notes/5
@@ -172,7 +184,7 @@ namespace BlazorApp6.Server.Controllers
             {
                 return NotFound();
             }
-            if ( Amihere(note))
+            if (Amihere(note))
             {
                 foreach (var user in note.Users)
                 {
@@ -186,12 +198,13 @@ namespace BlazorApp6.Server.Controllers
             {
                 return BadRequest();
             }
-            
         }
+
         private bool NotesExists(int id)
         {
             return _context.Notes.Any(e => e.Idnotes == id);
         }
+
         private bool Amihere(Note note)
         {
             bool amihere = false;

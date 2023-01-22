@@ -9,6 +9,7 @@ using BlazorApp6.ViewModels;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using BlazorApp6.Client.Services.NoteService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -18,6 +19,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMatterialService, MatterialService>();
+builder.Services.AddScoped<INoteService,NoteService>();
 builder.Services.AddScoped<IClipboardService, ClipboardService>();
 builder.Services.AddSingleton<UserViewModel>();
 builder.Services.AddScoped<AuthenticationStateProvider,CustomAuthStateProvidedr >();

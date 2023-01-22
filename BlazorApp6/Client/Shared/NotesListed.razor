@@ -1,0 +1,61 @@
+﻿@using BlazorApp6.Client.Services.NoteService
+@using BlazorApp6.ViewModels
+@inject INoteService NoteService
+@inject NavigationManager NavMeg
+<div>
+
+    <h1> List of Notes</h1>
+    <h2>Add new Note</h2>
+    <button class="button" @onclick="AddIt">
+        <h3>Create</h3>
+    </button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var note in NoteService.notes)
+            {
+                <tr>
+                    <td>@note.Note1</td>
+                    <td>
+                        <button class="button" @onclick="(() => Modif(note.Idnotes))">
+                            <h3>modify</h3>
+                        </button>
+                    </td>
+                    <th>
+                        <button class="button" @onclick="(() => Del(note.Idnotes))">
+                            <h3>del</h3>
+                        </button>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+    private NoteDTO note = new NoteDTO();
+    protected override async Task OnInitializedAsync()
+    {
+        await NoteService.GetNotesAsync();
+    }
+    void Modif(int Id)
+    {
+        NavMeg.NavigateTo($"itemMod/{Id}");
+    }
+    void Del(int Id)
+    {
+        NoteService.DeleteNoteAsync(Id);
+    }
+    void AddIt()
+    {
+        NavMeg.NavigateTo($"itemMod");
+    }
+}

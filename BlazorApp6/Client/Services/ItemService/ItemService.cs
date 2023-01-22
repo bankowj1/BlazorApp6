@@ -1,5 +1,4 @@
-﻿using BlazorApp6.Shared.Models;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 
 namespace BlazorApp6.Client.Services.ItemService
@@ -9,7 +8,7 @@ namespace BlazorApp6.Client.Services.ItemService
         private readonly HttpClient _httpClient;
         private readonly NavigationManager _navigationManager;
 
-        public ItemService(HttpClient httpClient,NavigationManager navigationManager)
+        public ItemService(HttpClient httpClient, NavigationManager navigationManager)
         {
             _httpClient = httpClient;
             _navigationManager = navigationManager;
@@ -60,6 +59,5 @@ namespace BlazorApp6.Client.Services.ItemService
                 throw new Exception("not posted");
             _navigationManager.NavigateTo("itemList");
         }
-
     }
 }

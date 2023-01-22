@@ -1,0 +1,56 @@
+﻿@page "/noteMod"
+@page "/moteMod/{id:int}"
+@using BlazorApp6.Client.Services.NoteService
+@inject INoteService NoteService
+
+@if (Id == null)
+{
+    <h1>Add Item</h1>
+}
+else
+{
+    <h1>Modify Item</h1>
+
+}
+<EditForm Model=noteDTO OnSubmit="NoteSubmit">
+    <InputTextArea @bind-Value=noteDTO.Note1 style="width: 400px; height:auto;font-size:20px;" />
+    <button type="submit" class="button"> @btnText </button>
+    <button @onclick="DelNote"> Save file</button>
+</EditForm>
+
+@code {
+    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+    [Parameter]
+    public int? Id { get; set; }
+
+    NoteDTO noteDTO= new();
+    private string btnText = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        btnText = Id == null ? "Save New" : "Update";
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            //noteDTO = await NoteService.GetNoteAsync((int)Id);
+        }
+    }
+    async Task NoteSubmit()
+    {
+        noteDTO.Note1 = _sanitizer.Sanitize(noteDTO.Note1);
+        if (Id == null)
+        {
+            await NoteService.CreateNoteAsync(noteDTO);
+        }
+        else
+        {
+            await NoteService.UpdateNoteAsync(noteDTO,(int)Id);
+        }
+    }
+    async Task DelNote()
+    {
+        await NoteService.DeleteNoteAsync((int)Id);
+    }
+}
