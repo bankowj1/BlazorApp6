@@ -16,13 +16,13 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IMatterialService, MatterialService>();
-builder.Services.AddScoped<INoteService,NoteService>();
 builder.Services.AddScoped<IClipboardService, ClipboardService>();
 builder.Services.AddSingleton<UserViewModel>();
 builder.Services.AddScoped<AuthenticationStateProvider,CustomAuthStateProvidedr >();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IMatterialService, MatterialService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredSessionStorage();
 

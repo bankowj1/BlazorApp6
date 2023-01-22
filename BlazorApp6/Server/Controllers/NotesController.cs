@@ -8,14 +8,14 @@ namespace BlazorApp6.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController, Authorize]
-    public class NotesControllerMy : ControllerBase
+    public class NotesController : ControllerBase
     {
         private readonly appdbContext _context;
         private readonly IUserService _userService;
         public static User user = new();
         private HtmlSanitizer _sanitizer = new HtmlSanitizer();
 
-        public NotesControllerMy(appdbContext context, IUserService userService)
+        public NotesController(appdbContext context, IUserService userService)
         {
             _context = context;
             _userService = userService;
@@ -50,7 +50,7 @@ namespace BlazorApp6.Server.Controllers
             return note;
         }
 
-        // GET: api/Notes/my
+        // GET: api/Notes/My
         [HttpGet("My")]
         public async Task<ActionResult<IEnumerable<Note>>> GetMyNotes()
         {
@@ -70,21 +70,6 @@ namespace BlazorApp6.Server.Controllers
             //testowane dziala
             Note note1 = new();
             note1.Note1 = Encoding.UTF8.GetBytes(_sanitizer.Sanitize(note.Note1));
-            var l = new List<User>();
-            var us = await _context.Users.FindAsync(_userService.GetMyId());
-            if (us != null)
-                l.Add(us);
-            note1.Users = l;
-            _context.Notes.Add(note1);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-        [HttpPost]
-        public async Task<ActionResult<Note>> PostNotesCoded(NoteDTOCoded note)
-        {
-            //testowane dziala
-            Note note1 = new();
-            note1.Note1 = note.Note1;
             var l = new List<User>();
             var us = await _context.Users.FindAsync(_userService.GetMyId());
             if (us != null)

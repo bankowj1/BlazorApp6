@@ -1,40 +1,49 @@
 ﻿@page "/noteMod"
-@page "/moteMod/{id:int}"
+@page "/moteMod/{id:int}/{cod:int}"
 @using BlazorApp6.Client.Services.NoteService
 @inject INoteService NoteService
 
 @if (Id == null)
 {
-    <h1>Add Item</h1>
+    <h1>Add Note</h1>
 }
 else
 {
-    <h1>Modify Item</h1>
+    <h1>Modify Note</h1>
 
 }
 <EditForm Model=noteDTO OnSubmit="NoteSubmit">
     <InputTextArea @bind-Value=noteDTO.Note1 style="width: 400px; height:auto;font-size:20px;" />
     <button type="submit" class="button"> @btnText </button>
-    <button @onclick="DelNote"> Save file</button>
+    <button @onclick="DelNote"> Save notes</button>
 </EditForm>
-
+<EditForm Model=pass OnSubmit="CodeNote">
+    <InputText @bind-Value=pass/>
+    <button type="submit" class="button"> @btnText2 </button>
+</EditForm>
 @code {
     private HtmlSanitizer _sanitizer = new HtmlSanitizer();
     [Parameter]
     public int? Id { get; set; }
-
+    [Parameter]
+    public int? Cod { get; set; }
+    private bool coded;
+    private string pass = string.Empty;
     NoteDTO noteDTO= new();
     private string btnText = string.Empty;
-
+    private string btnText2 = string.Empty;
     protected override void OnInitialized()
     {
         btnText = Id == null ? "Save New" : "Update";
+        coded = Cod == null ? false : Convert.ToBoolean(Cod);
+        btnText = coded == true ? "Decode" : "Encode";
     }
     protected override async Task OnParametersSetAsync()
     {
         if (Id != null)
         {
-            //noteDTO = await NoteService.GetNoteAsync((int)Id);
+            noteDTO = NoteService.GetNote((int)Id);
+            noteDTO.Note1 = _sanitizer.Sanitize(noteDTO.Note1);
         }
     }
     async Task NoteSubmit()
@@ -52,5 +61,18 @@ else
     async Task DelNote()
     {
         await NoteService.DeleteNoteAsync((int)Id);
+    }
+    async Task CodeNote()
+    {
+        if (coded == true)
+        {
+            //noteDTO = await NoteService.DecodeNote(noteDTO,pass);
+        }
+        else
+        {
+            //noteDTO = await NoteService.EncodeNote(noteDTO, pass);
+        }
+        coded = !coded;
+        pass = string.Empty;
     }
 }

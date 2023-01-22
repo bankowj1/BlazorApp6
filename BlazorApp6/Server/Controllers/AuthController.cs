@@ -160,6 +160,7 @@ namespace BlazorApp6.Server.Controllers
             User lognUser = await _context.Users
                         .Where(u => u.Userlogin == Encoding.UTF8.GetBytes(logUserDTO.Userlogin))
                         .FirstOrDefaultAsync();
+            Thread.Sleep(1000);
             if (lognUser == null)
                 return BadRequest("");
             if (!VerifyPasswordHash(logUserDTO.Pass, lognUser.Pass)) { return BadRequest(""); }

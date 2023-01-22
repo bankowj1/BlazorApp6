@@ -4,7 +4,7 @@
     {
         List<Note> notes { get; set; }
 
-        //Task<NoteDTO> GetNoteAsync(int id);
+        NoteDTO GetNote(int id);
 
         Task CreateNoteAsync(NoteDTO noteDTO);
 
@@ -13,5 +13,8 @@
         Task DeleteNoteAsync(int noteId);
 
         Task GetNotesAsync();
+
+        NoteDTO EncodeNote(NoteDTO note, string pass);
+        NoteDTO DecodeNote(NoteDTO note, string pass);
     }
 }

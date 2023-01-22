@@ -2,6 +2,7 @@
 @using BlazorApp6.ViewModels
 @inject INoteService NoteService
 @inject NavigationManager NavMeg
+@using System.Text
 <div>
 
     <h1> List of Notes</h1>
@@ -9,46 +10,63 @@
     <button class="button" @onclick="AddIt">
         <h3>Create</h3>
     </button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Note</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var note in NoteService.notes)
-            {
+    @if(NoteService.notes != null){
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@note.Note1</td>
-                    <td>
-                        <button class="button" @onclick="(() => Modif(note.Idnotes))">
-                            <h3>modify</h3>
-                        </button>
-                    </td>
-                    <th>
-                        <button class="button" @onclick="(() => Del(note.Idnotes))">
-                            <h3>del</h3>
-                        </button>
-                    </th>
+                    <th>Note</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var note in NoteService.notes)
+                {
+                    <tr>
+                        <td>
+                            @if (!note.IsCoded)
+                            {
+                                @(Encoding.UTF8.GetString(note.Note1).Length > 20 ? Encoding.UTF8.GetString(note.Note1).Substring(0, 20) : Encoding.UTF8.GetString(note.Note1))
+                            }
+                        </td>
+                        <td>
+                            <button class="button" @onclick="(() => Modif(note.Idnotes,note.IsCoded))">
+                                <h3>modify</h3>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="button" @onclick="(() => Del(note.Idnotes))">
+                                <h3>del</h3>
+                            </button>
+                        </td>
+                        <td>
+                            @if (note.IsCoded)
+                            {
+                                <button class="button" @onclick="(() => Decode(note.Idnotes))">
+                                    <h3>Decode</h3>
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 </div>
 
 
 
 @code {
-    private NoteDTO note = new NoteDTO();
+
     protected override async Task OnInitializedAsync()
     {
         await NoteService.GetNotesAsync();
     }
-    void Modif(int Id)
+    void Modif(int Id,bool Cod)
     {
-        NavMeg.NavigateTo($"itemMod/{Id}");
+        int b = Cod ? 1 : 0;
+        NavMeg.NavigateTo($"noteMod/{Id}/{b}");
     }
     void Del(int Id)
     {
@@ -56,6 +74,10 @@
     }
     void AddIt()
     {
-        NavMeg.NavigateTo($"itemMod");
+        NavMeg.NavigateTo($"noteMod");
+    }
+    void Decode(int Id)
+    {
+        /**/
     }
 }
