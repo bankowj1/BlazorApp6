@@ -48,7 +48,9 @@ else
     </BlazoredTextEditor>
 </div>
 <div>
-    <button @onclick="NoteSubmit" class="button"> @btnText </button>
+    @if(!coded){
+        <button @onclick="NoteSubmit" class="button"> @btnText </button>
+    }
     <button @onclick="DelNote"> Delete Note</button>
 </div>
 <br />
@@ -63,8 +65,6 @@ else
 
     [Parameter]
     public int? Id { get; set; }
-    [Parameter]
-    public int? Cod { get; set; }
     private bool coded;
     private string pass = string.Empty;
     Note note= new();
@@ -77,8 +77,6 @@ else
     protected override void OnInitialized()
     {
         btnText = Id == null ? "Save New" : "Update";
-        coded = Cod == null ? false : Convert.ToBoolean(Cod);
-        btnText2 = coded == true ? "Decode" : "Encode";
     }
     protected override async Task OnParametersSetAsync()
     {
@@ -93,11 +91,13 @@ else
                     markupString = new MarkupString("");   
             }
         }
+        coded = note.IsCoded;
+        btnText2 = coded == true ? "Decode" : "Encode";
     }
     async Task NoteSubmit()
     {
         text = _sanitizer.Sanitize(await this.q.GetHTML());
-        
+
         NoteDTO noteDTO = new NoteDTO { Note1 = text, IsCoded = coded };
         StateHasChanged();
         if (Id == null)
@@ -119,15 +119,18 @@ else
         NoteDTO noteDTO = new NoteDTO { Note1 = text, IsCoded = coded };
         if (coded)
         {
-            text = await NoteService.DecodeNote(noteDTO,pass);
+            text = await NoteService.DecodeNote(note, pass);
+            await this.q.LoadHTMLContent(text);
+            StateHasChanged();
         }
         else
         {
-            text = await NoteService.EncodeNote(noteDTO, pass);
+            note.Note1 = await NoteService.EncodeNote(noteDTO, pass);
+            NoteDTOBytes noteDTOBytes = new NoteDTOBytes() {Note1=note.Note1,IsCoded=true };
+            await NoteService.UpdateNoteByteAsync(noteDTOBytes, (int)Id);
         }
-        await this.q.LoadHTMLContent(text);
-        StateHasChanged();
         coded = !coded;
         pass = string.Empty;
+        btnText2 = coded == true ? "Decode" : "Encode";
     }
 }

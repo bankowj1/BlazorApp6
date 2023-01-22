@@ -1,0 +1,47 @@
+﻿@page "/shareNote/{id:int}"
+@using BlazorApp6.Client.Services.NoteService
+@using System.Text
+@inject INoteService NoteService
+<div>
+    @mess
+</div>
+
+markupString
+<br/>
+<EditForm Model=username OnSubmit="NoteShare">
+    <InputText @bind-Value=username />
+    <button type="submit" class="button"> share with user </button>
+</EditForm>
+@code {
+    private HtmlSanitizer _sanitizer = new HtmlSanitizer();
+    [Parameter]
+    public int? Id { get; set; }
+
+    Note note = new();
+    private MarkupString markupString;
+    private string text = string.Empty;
+
+    private string username = string.Empty;
+
+    private string mess = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            note = NoteService.GetNote((int)Id);
+            {
+                text = Encoding.UTF8.GetString(note.Note1);
+                if (text.Length != 0)
+                    markupString = new MarkupString(_sanitizer.Sanitize(text));
+                else
+                    markupString = new MarkupString("");
+            }
+        }
+    }
+    async Task NoteShare()
+    {
+        await NoteService.AddUserNote(note.Idnotes,username);
+
+    }
+}

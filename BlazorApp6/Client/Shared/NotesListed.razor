@@ -17,6 +17,7 @@
                     <th>Note</th>
                     <th></th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +41,14 @@
                             <button class="button" @onclick="(() => Del(note.Idnotes))">
                                 <h3>del</h3>
                             </button>
+                        </td>
+                        <td>
+                            @if (!note.IsCoded)
+                            {
+                                <button class="button" @onclick="(() => Share(note.Idnotes))">
+                                    <h3>Share</h3>
+                                </button>
+                            }
                         </td>
                     </tr>
                 }
@@ -68,5 +77,9 @@
     void AddIt()
     {
         NavMeg.NavigateTo($"noteMod");
+    }
+    void Share(int Id)
+    {
+        NavMeg.NavigateTo($"shareNote/{Id}");
     }
 }

@@ -83,7 +83,7 @@ namespace BlazorApp6.Server.Controllers
             return NoContent();
         }
         [HttpPost("encode")]
-        public async Task<string> PostEncodeNotes(NoteDTOEnco note)
+        public async Task<byte[]> PostEncodeNotes(NoteDTOEnco note)
         {
             if (note.Note1 != null && note.pass != null)
             {
@@ -110,25 +110,25 @@ namespace BlazorApp6.Server.Controllers
                             using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                             {
                                 //Write all data to the stream.
-                                swEncrypt.Write(note.Note1);
+                                swEncrypt.Write((string)note.Note1);
                             }
                             encoded = msEncrypt.ToArray();
                         }
                     }
                 }
-                return Encoding.UTF8.GetString(encoded);
+                return encoded;
 
             }
             throw new Exception("bad password or empty note");
 
         }
         [HttpPost("decode")]
-        public async Task<string> PostDecodeNotes(NoteDTOEnco note)
+        public async Task<string> PostDecodeNotes(NoteDTODeco note)
         {
             if (note.Note1 != null && note.pass != null)
             {
                 byte[] passwordArray = Encoding.UTF8.GetBytes(note.pass);
-                byte[] encoded = Encoding.UTF8.GetBytes(note.Note1);
+                
                 string decoded = string.Empty;
                 // Use the password to generate the key and initialization vector
                 byte[] key, iv;
@@ -144,7 +144,7 @@ namespace BlazorApp6.Server.Controllers
                     ICryptoTransform decryptor = myAes.CreateDecryptor(myAes.Key, myAes.IV);
 
                     // Create the streams used for encryption.
-                    using (MemoryStream msDecrypt = new MemoryStream(encoded))
+                    using (MemoryStream msDecrypt = new MemoryStream(note.Note1))
                     {
                         using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
@@ -164,6 +164,43 @@ namespace BlazorApp6.Server.Controllers
 
         }
         [HttpPut("{id}")]
+        public async Task<IActionResult> PutNoteBytes(int id, NoteDTOBytes noteDTO)
+        {
+            Note note1 = new();
+            note1.Note1 = noteDTO.Note1;
+            var note = await _context.Notes.Include(n => n.Users).SingleOrDefaultAsync(n => n.Idnotes == id);
+            if (note == null)
+                return NotFound();
+
+            if (Amihere(note))
+            {
+                note.Note1 = note1.Note1;
+                note.IsCoded = (bool)noteDTO.IsCoded;
+                _context.Entry(note).State = EntityState.Modified;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!NotesExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPut("Bytes/{id}")]
         public async Task<IActionResult> PutNote(int id, NoteDTO noteDTO)
         {
             Note note1 = new();
@@ -200,19 +237,18 @@ namespace BlazorApp6.Server.Controllers
                 return BadRequest();
             }
         }
-
-        [HttpPut("adduser/{id,string}")]
-        public async Task<IActionResult> PostAddUserNote(int id, string username)
+        [HttpPut("adduser/{id}")]
+        public async Task<IActionResult> PutAddUserNote(int id ,AddNoteUserDTO noteUserDTO)
         {
             //to zrobiłem dobrze wzoruj sie na tym jesli idzie o poczatek sanityzacje itp
-            username = _sanitizer.Sanitize(username);
+            noteUserDTO.UserName = _sanitizer.Sanitize(noteUserDTO.UserName);
             Note note1 = new();
-            var note = await _context.Notes.Include(n => n.Users).SingleOrDefaultAsync(n => n.Idnotes == id);
+            var note = await _context.Notes.Include(n => n.Users).SingleOrDefaultAsync(n => n.Idnotes == noteUserDTO.NoteID);
             if (note == null)
                 return BadRequest();
             if (Amihere(note))
             {
-                var user = await _context.Users.Where(us => us.Username == username).SingleOrDefaultAsync();
+                var user = await _context.Users.Where(us => us.Username == noteUserDTO.UserName).SingleOrDefaultAsync();
                 if (user != null)
                 {
                     ICollection<User> users = note.Users;
@@ -226,7 +262,7 @@ namespace BlazorApp6.Server.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NotesExists(id))
+                    if (!NotesExists(noteUserDTO.NoteID))
                     {
                         return NotFound();
                     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 
 namespace BlazorApp6.Client.Services.NoteService
 {
@@ -61,23 +62,39 @@ namespace BlazorApp6.Client.Services.NoteService
             _navigationManager.NavigateTo("notesList");
         }
 
-        public async Task <string> EncodeNote(NoteDTO note, string pass)
+        public async Task UpdateNoteByteAsync(NoteDTOBytes note, int id)
+        {
+            var res = await _httpClient.PutAsJsonAsync($"api/Notes/Bytes/{id}", note);
+            if (res == null)
+                throw new Exception("not posted");
+            _navigationManager.NavigateTo("notesList");
+        }
+
+        public async Task AddUserNote(int id, string username)
+        {
+            AddNoteUserDTO noteUserDTO = new AddNoteUserDTO() { NoteID = id, UserName = username };
+            var res = await _httpClient.PutAsJsonAsync($"api/Notes/adduser/{id}", noteUserDTO);
+            if (res == null)
+                throw new Exception("not posted");
+        }
+
+        public async Task<byte[]> EncodeNote(NoteDTO note, string pass)
         {
             NoteDTOEnco noteDTOEnco = new NoteDTOEnco() { Note1 = note.Note1, pass = pass };
             var res = await _httpClient.PostAsJsonAsync("api/Notes/encode", noteDTOEnco);
             if(res != null)
             {
-                var resp = await res.Content.ReadAsStringAsync();
+                var resp = await res.Content.ReadAsByteArrayAsync();
                 return resp;
             }
-            return "";
+            throw new Exception("error");
         }
 
 
-        public async Task<string> DecodeNote(NoteDTO note, string pass)
+        public async Task<string> DecodeNote(Note note, string pass)
         {
-            NoteDTOEnco noteDTOEnco = new NoteDTOEnco() { Note1 = note.Note1, pass = pass };
-            var res = await _httpClient.PostAsJsonAsync("api/Notes/decode", noteDTOEnco);
+            NoteDTODeco noteDTODeco = new NoteDTODeco() { Note1 = note.Note1, pass = pass };
+            var res = await _httpClient.PostAsJsonAsync("api/Notes/decode", noteDTODeco);
             if (res != null)
             {
                 var resp = await res.Content.ReadAsStringAsync();
@@ -85,5 +102,7 @@ namespace BlazorApp6.Client.Services.NoteService
             }
             return "";
         }
+
+        
     }
 }
