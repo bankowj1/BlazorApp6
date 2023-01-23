@@ -8,11 +8,11 @@ services:
     container_name: appDBSql
     image: mcr.microsoft.com/mssql/server:2017-latest
     ports:
-     - 1433:1433
+     - 8003:1433
     environment:
      - ACCEPT_EULA=Y
-     - SA_PASSWORD=1Secure*Password1
-     - MSSQL_PID=Standard
+     - SA_PASSWORD=Secure*Password1
+     - MSSQL_PID=Developer
     networks:
      - blazorappNet
   blazorapp6.server:
@@ -28,6 +28,6 @@ services:
     environment:
      - DB_HOST=appdbSql
      - DB_NAME=appdb
-     - DB_SA_PASSWORD=1Secure*Password1
+     - DB_SA_PASSWORD=Secure*Password1
     networks:
      - blazorappNet
