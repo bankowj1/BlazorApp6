@@ -1,0 +1,33 @@
+version: '3.4'
+
+networks:
+  blazorappNet:
+
+services:
+  appdbSql:
+    container_name: appDBSql
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+     - 1433:1433
+    environment:
+     - ACCEPT_EULA=Y
+     - SA_PASSWORD=1Secure*Password1
+     - MSSQL_PID=Standard
+    networks:
+     - blazorappNet
+  blazorapp6.server:
+    container_name: blazorApp
+    image: ${DOCKER_REGISTRY-}blazorapp6server
+    build:
+      context: .
+      dockerfile: BlazorApp6/Server/Dockerfile
+    ports:
+     - 8001:80
+    depends_on:
+     - appdbSql
+    environment:
+     - DB_HOST=appdbSql
+     - DB_NAME=appdb
+     - DB_SA_PASSWORD=1Secure*Password1
+    networks:
+     - blazorappNet
