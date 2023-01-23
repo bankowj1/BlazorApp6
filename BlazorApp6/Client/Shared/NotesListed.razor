@@ -17,7 +17,6 @@
                     <th>Note</th>
                     <th></th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -35,11 +34,6 @@
                         <td>
                             <button class="button" @onclick="(() => Modif(note.Idnotes))">
                                 <h3>modify</h3>
-                            </button>
-                        </td>
-                        <td>
-                            <button class="button" @onclick="(() => Del(note.Idnotes))">
-                                <h3>del</h3>
                             </button>
                         </td>
                         <td>
@@ -68,11 +62,6 @@
     void Modif(int Id)
     {
         NavMeg.NavigateTo($"noteMod/{Id}");
-    }
-    void Del(int Id)
-    {
-        NoteService.DeleteNoteAsync(Id);
-        StateHasChanged();
     }
     void AddIt()
     {

@@ -110,7 +110,7 @@ namespace BlazorApp6.Server.Controllers
                             using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                             {
                                 //Write all data to the stream.
-                                swEncrypt.Write((string)note.Note1);
+                                swEncrypt.Write(note.Note1);
                             }
                             encoded = msEncrypt.ToArray();
                         }
@@ -164,10 +164,10 @@ namespace BlazorApp6.Server.Controllers
 
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutNoteBytes(int id, NoteDTOBytes noteDTO)
+        public async Task<IActionResult> PutNoteBytes(int id, NoteDTO noteDTO)
         {
             Note note1 = new();
-            note1.Note1 = noteDTO.Note1;
+            note1.Note1 = Encoding.UTF8.GetBytes(_sanitizer.Sanitize(noteDTO.Note1));
             var note = await _context.Notes.Include(n => n.Users).SingleOrDefaultAsync(n => n.Idnotes == id);
             if (note == null)
                 return NotFound();
@@ -201,10 +201,10 @@ namespace BlazorApp6.Server.Controllers
             }
         }
         [HttpPut("Bytes/{id}")]
-        public async Task<IActionResult> PutNote(int id, NoteDTO noteDTO)
+        public async Task<IActionResult> PutNote(int id, NoteDTOBytes noteDTO)
         {
             Note note1 = new();
-            note1.Note1 = Encoding.UTF8.GetBytes(_sanitizer.Sanitize(noteDTO.Note1));
+            note1.Note1 = noteDTO.Note1;
             var note = await _context.Notes.Include(n => n.Users).SingleOrDefaultAsync(n => n.Idnotes == id);
             if (note == null)
                 return NotFound();
